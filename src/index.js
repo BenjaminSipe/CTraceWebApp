@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
-import Header from "./routes/Header";
 import reportWebVitals from "./reportWebVitals";
 // import { Main, Heading, Paragraph } from "grommet"
 import { BrowserRouter } from "react-router-dom";

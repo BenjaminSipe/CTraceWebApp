@@ -1,10 +1,26 @@
 import React from "react";
 import { Grommet, Box, Image, Button, Header, Menu } from "grommet";
 import Logo from "../Logo_V2.svg";
-export default function Header2() {
+export default function AppHeader() {
   return (
     <Header background="brand">
-      <Button img={Logo} hoverIndicator />
+      <Button
+        href="/home"
+        hoverIndicator
+        style={{
+          borderStyle: "solid",
+          borderColor: "#aD7CfB",
+          borderRadius: "15px",
+        }}
+      >
+        {" "}
+        <Image
+          fit="contain"
+          src={Logo}
+          style={{ padding: "5px", width: "140px" }}
+        ></Image>
+      </Button>
+
       <Menu label="account" items={[{ label: "logout" }]} />
     </Header>
     // <Box

@@ -4,7 +4,7 @@ import { Main, Heading } from "grommet";
 import CaseForm from "./routes/Forms/CaseForm";
 import ContactForm from "./routes/Forms/ContactForm";
 import Home from "./routes/Home";
-import Header2 from "./routes/Header";
+import Header from "./routes/AppHeader";
 import { Switch, Route, useLocation } from "react-router-dom";
 
 function useQuery() {
@@ -18,7 +18,7 @@ function App() {
     // <Main>
     <Switch>
       <Route path="/Header">
-        <Header2></Header2>
+        <Header></Header>
       </Route>
       <Route path="/Contact">
         <Heading alignSelf="start">C-Trace</Heading>
