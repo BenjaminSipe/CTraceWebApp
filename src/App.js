@@ -1,23 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
-import React from 'react';
-import { Main, Heading, Paragraph, TextInput } from "grommet"
-import CaseForm from './CaseForm'
+import "./App.css";
+import React from "react";
+import { Main, Heading } from "grommet";
+import CaseForm from "./routes/Forms/CaseForm";
+import ContactForm from "./routes/Forms/ContactForm";
+import Home from "./routes/Home";
+import Header2 from "./routes/Header";
+import { Switch, Route, useLocation } from "react-router-dom";
 
-
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 function App() {
+  let query = useQuery();
   return (
-    <div className="App">
-      <header className="App-header">
-        <Main pad="large">
-          <Heading>Something</Heading>
-          <Paragraph>Something about something</Paragraph>
-          <CaseForm/>
-
-        </Main>
-      </header>
-    </div>
+    // <div>
+    // <Main>
+    <Switch>
+      <Route path="/Header">
+        <Header2></Header2>
+      </Route>
+      <Route path="/Contact">
+        <Heading alignSelf="start">C-Trace</Heading>
+        <h2>Close Contact Form</h2>
+        <ContactForm query={query} />
+      </Route>
+      <Route path="/Case">
+        <Heading alignSelf="start">C-Trace</Heading>
+        <h2>Covid Positive Form</h2>
+        <CaseForm />
+      </Route>
+      <Route path="/">
+        <Home />
+      </Route>
+    </Switch>
+    // </Main>
+    // </div>
   );
 }
 
@@ -30,6 +48,5 @@ function App() {
 //   "phone": "(417) 337-2836",
 //   "doc": "2/3/2021"
 // }
-
 
 export default App;

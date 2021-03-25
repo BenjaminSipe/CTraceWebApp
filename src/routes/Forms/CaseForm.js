@@ -1,5 +1,5 @@
 // import logo from './logo.svg';
-import "./App.css";
+import "../../App.css";
 import React, { Component } from "react";
 import {
   Grommet,
@@ -10,7 +10,7 @@ import {
   Box,
   Button,
 } from "grommet";
-import dateMask from "./MaskDate";
+import dateMask from "../../scripts/MaskDate";
 
 class CaseForm extends Component {
   state = { dob: "" };
