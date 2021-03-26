@@ -1,11 +1,11 @@
 import React from "react";
-import { Grommet, Box, Image, Button, Header, Menu } from "grommet";
+import { Image, Button, Header, Menu } from "grommet";
 import Logo from "../Logo_V2.svg";
 export default function AppHeader() {
   return (
     <Header background="brand">
       <Button
-        href="/home"
+        href="/"
         hoverIndicator
         style={{
           borderStyle: "solid",

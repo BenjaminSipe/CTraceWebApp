@@ -9,6 +9,7 @@ import {
   FormField,
   Box,
   Button,
+  Heading,
 } from "grommet";
 
 import axios from "axios";
@@ -32,6 +33,8 @@ class ContactForm extends Component {
     const { value } = this.state;
     return (
       <Grommet>
+        <Heading alignSelf="start">C-Trace</Heading>
+        <h2>Close Contact Form</h2>
         <Form
           value={value}
           onChange={(nextValue) => {
