@@ -1,30 +1,38 @@
-import React from "react";
+import React, { Component } from "react";
 import { Grommet, Grid, Box, Main, Heading } from "grommet";
 import PatientCard from "./PatientCard";
-export default function ContactView() {
-  const tempData = [
-    { name: "Benjamin Sipe", _id: "1234", date: "3/27/2021" },
-    { name: "David", _id: "1111" },
-    {},
-  ];
-  const items = [];
-  for (var i = 0; i < tempData.length; i++) {
-    items.push(PatientCard({ data: tempData[i] }));
+import { getContacts } from "../../scripts/API";
+
+export default class ContactView extends Component {
+  state = {};
+
+  constructor() {
+    super();
+    const contacts = async () => {
+      var cards = await (await getContacts()).map((item) => {
+        return <PatientCard data={item} key={item._id}></PatientCard>;
+      });
+      this.setState({ cards });
+    };
+    contacts();
   }
-  return (
-    <Grommet style={{ margin: "10px" }}>
-      <Box
-        background="light-1"
-        style={{ padding: "15px", borderRadius: "10px" }}
-      >
-        <Grid
-          rows={["small"]}
-          columns="120px"
-          gap={{ row: "medium", column: "medium" }}
+
+  render() {
+    return (
+      <Grommet style={{ margin: "10px" }}>
+        <Box
+          background="light-1"
+          style={{ padding: "15px", borderRadius: "10px" }}
         >
-          {items}
-        </Grid>
-      </Box>
-    </Grommet>
-  );
+          <Grid
+            rows={["small"]}
+            columns="120px"
+            gap={{ row: "medium", column: "medium" }}
+          >
+            {this.state.cards}
+          </Grid>
+        </Box>
+      </Grommet>
+    );
+  }
 }
