@@ -6,23 +6,41 @@ import {
   Button,
   Avatar,
   Paragraph,
+  Text,
+  Box,
 } from "grommet";
+import LineItem from "./LineItem";
 
-export default function PatientCard() {
+export default function PatientCard(props) {
+  const { name, _id, date } = props.data;
   return (
-    <Card background="light-1" fill>
-      <CardHeader pad="small" background="light-5">
-        Benjamin Sipe
-      </CardHeader>
-      <CardBody pad="medium">This is where the info goes</CardBody>
-      <CardFooter
-        justify="start"
-        pad={{ vertical: "small", horizontal: "small" }}
-        background="light-2"
-      >
-        <Button hoverIndicator primary color="brand" label="View/Edit"></Button>
-      </CardFooter>
-    </Card>
+    <Button style={{ borderRadius: "12px" }}>
+      <Card background="light-1" height="200px">
+        {name ? (
+          <CardBody style={{ paddingTop: "6px" }} align="center">
+            <Avatar size="xlarge" background="neutral-1">
+              {name.split(" ").length > 1
+                ? name.split(" ")[0][0] + name.split(" ")[1][0]
+                : name[0]}
+            </Avatar>
+            <Text style={{ paddingTop: "12px" }} textAlign="center">
+              <Text>{name}</Text>
+              <br />
+              {date ? <Text color="gray">{date}</Text> : ""}
+            </Text>
+          </CardBody>
+        ) : (
+          <CardBody justify="center">
+            <Text textAlign="center" color="status-critical">
+              error, missing data
+            </Text>
+          </CardBody>
+        )}
+        <CardFooter background="brand" height="32px" justify="center">
+          Details
+        </CardFooter>
+      </Card>
+    </Button>
   );
 }
 

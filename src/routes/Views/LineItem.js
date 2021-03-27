@@ -1,4 +1,11 @@
-import { Paragraph } from "grommet";
+import { Paragraph, Box, Text } from "grommet";
 export default function LineItem(props) {
-  return <Paragraph>Test</Paragraph>;
+  return (
+    <Box>
+      <Paragraph>
+        <Text style={{ fontWeight: "bold" }}>{props.test}</Text>
+        {props.value}
+      </Paragraph>
+    </Box>
+  );
 }
