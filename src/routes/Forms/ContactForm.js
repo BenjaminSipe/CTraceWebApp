@@ -13,7 +13,12 @@ import {
 } from "grommet";
 
 import axios from "axios";
-import dateMask from "../../scripts/MaskDate";
+import {
+  dateMask,
+  phoneNumberMask,
+  nameMask,
+  emailMask,
+} from "../../scripts/InputMasks";
 
 class ContactForm extends Component {
   constructor(props) {
@@ -43,24 +48,22 @@ class ContactForm extends Component {
           onReset={() => this.setState({ value: {} })}
           onSubmit={({ value }) => {
             axios
-              .post("http://localhost:3000/api/case", value)
+              .post("http://localhost:3000/api/contact", value)
               .then(function (response) {
                 console.log(response);
               })
               .catch(function (error) {
                 console.log(error);
-              })
-              .then(function () {
-                // always executed
               });
           }}
         >
-          <FormField name="name" htmlFor="textinput-name" label="Name">
-            <TextInput
+          <FormField name="name" htmlFor="textinput-name" label="Full Name">
+            <MaskedInput
+              required
               id="textinput-name"
               name="name"
-              placeholder="John Doe"
-              required
+              mask={nameMask()}
+              value={value.name}
             />
           </FormField>
           <FormField name="address" htmlFor="textinput-address" label="Address">
@@ -84,16 +87,17 @@ class ContactForm extends Component {
             />
           </FormField>
           <FormField name="email" htmlFor="textinput-email" label="email">
-            <TextInput
+            <MaskedInput
               required
               id="textinput-email"
               name="email"
               placeholder="example@email.com"
+              mask={emailMask()}
+              value={value.email}
             />
           </FormField>
           <FormField name="dob" htmlFor="textinput-dob" label="Date of Birth">
             <MaskedInput
-              error={true}
               required
               id="textinput-dob"
               name="dob"
@@ -124,27 +128,7 @@ class ContactForm extends Component {
               required
               id="textinput-phone"
               name="phone"
-              mask={[
-                { fixed: "(" },
-                {
-                  length: 3,
-                  regexp: /^[0-9]{1,3}$/,
-                  placeholder: "xxx",
-                },
-                { fixed: ")" },
-                { fixed: " " },
-                {
-                  length: 3,
-                  regexp: /^[0-9]{1,3}$/,
-                  placeholder: "xxx",
-                },
-                { fixed: "-" },
-                {
-                  length: 4,
-                  regexp: /^[0-9]{1,4}$/,
-                  placeholder: "xxxx",
-                },
-              ]}
+              mask={phoneNumberMask()}
               value={value.phone}
             />
           </FormField>

@@ -26,7 +26,7 @@ function App() {
         <ContactForm query={query} />
       </Route>
       <Route path="/Case">
-        <CaseForm />
+        <CaseForm query={query} />
       </Route>
       <Route path="/postForm">
         <PostForm></PostForm>

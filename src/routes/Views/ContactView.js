@@ -6,15 +6,15 @@ import { getContacts } from "../../scripts/API";
 export default class ContactView extends Component {
   state = {};
 
-  constructor() {
-    super();
-    const contacts = async () => {
-      var cards = await (await getContacts()).map((item) => {
-        return <PatientCard data={item} key={item._id}></PatientCard>;
-      });
-      this.setState({ cards });
-    };
-    contacts();
+  contacts = async () => {
+    var cards = await (await getContacts()).map((item) => {
+      return <PatientCard data={item} key={item._id}></PatientCard>;
+    });
+    this.setState({ cards });
+  };
+
+  componentDidMount() {
+    this.contacts();
   }
 
   render() {
