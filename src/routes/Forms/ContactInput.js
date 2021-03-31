@@ -1,11 +1,11 @@
-import { Grid, Box, FormField, TextInput, RadioButtonGroup } from "grommet";
+import { Grid, FormField, TextInput, RadioButtonGroup } from "grommet";
 import React from "react";
-import {
-  phoneNumberMask,
-  nameMask,
-  emailMask,
-  validationMasks,
-} from "../../scripts/InputMasks";
+// import {
+//   phoneNumberMask,
+//   nameMask,
+//   emailMask,
+//   validationMasks,
+// } from "../../scripts/InputMasks";
 export default function ContactInput(props) {
   let index = props.index;
   const [value, setValue] = React.useState("Phone");
@@ -34,9 +34,11 @@ export default function ContactInput(props) {
           id={"textinput-contacts-" + index}
           placeholder="Full name"
           name="contactName"
-          onChange={(event) =>
-            props.inputCallback(event.target.value, index, "name")
-          }
+          value={contactName}
+          onChange={(event) => {
+            setName(event.target.value);
+            props.inputCallback(event.target.value, index, "name");
+          }}
         />
       </FormField>
       <FormField
@@ -59,6 +61,7 @@ export default function ContactInput(props) {
           size="small"
           id={"textinput-contactinfo-" + index}
           name="info"
+          value={info}
           placeholder={
             {
               Phone: "(000) 000-0000",

@@ -1,22 +1,22 @@
 import {
   Card,
-  CardHeader,
+  // CardHeader,
   CardBody,
   CardFooter,
   Button,
   Avatar,
-  Paragraph,
+  // Paragraph,
   Text,
-  Box,
+  // Box,
 } from "grommet";
-import LineItem from "./LineItem";
+// import LineItem from "./LineItem";
 
 export default function PatientCard(props) {
   const { name, _id, date } = props.data;
   return (
     <Button style={{ borderRadius: "12px" }}>
       <Card background="light-1" height="200px">
-        {name ? (
+        {name && _id ? (
           <CardBody style={{ paddingTop: "6px" }} align="center">
             <Avatar size="xlarge" background="neutral-1">
               {name.split(" ").length > 1

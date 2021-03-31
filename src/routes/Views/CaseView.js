@@ -1,5 +1,5 @@
 import React from "react";
-import { Grommet, Grid, Box, Main, Heading } from "grommet";
+import { Grommet, Grid, Box } from "grommet";
 import PatientCard from "./PatientCard";
 
 export default function CaseView() {

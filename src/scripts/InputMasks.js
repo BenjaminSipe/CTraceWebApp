@@ -62,11 +62,11 @@ function nameMask() {
 function emailMask() {
   return [
     {
-      regexp: /^[A-z0-9\.-]*$/,
+      regexp: /^[A-z0-9.-]*$/,
     },
     { fixed: "@" },
     {
-      regexp: /^([A-z0-9\-])*$/,
+      regexp: /^([A-z0-9.-])*$/,
     },
     {
       regexp: /^(\.[A-z0-9]*)*$/,
@@ -81,7 +81,7 @@ const validationMasks = {
     status: "error",
   },
   email: {
-    regexp: /^[A-z0-9\.-]*@([A-z0-9\-])*(\.[A-z0-9]*)*$/,
+    regexp: /^[A-z0-9.-]*@([A-z0-9-])*(\.[A-z0-9]*)*$/,
     message: "Invalid Email",
     status: "error",
   },
@@ -92,7 +92,7 @@ const validationMasks = {
   },
   date: (value) => {
     let ar = value.split("/");
-    if (ar.length != 3) {
+    if (ar.length !== 3) {
       return { message: "Invalid Date", status: "error" };
     } else {
       let month = ar[0],
@@ -104,10 +104,10 @@ const validationMasks = {
       ) {
         return { message: "Year invalid", status: "error" };
       }
-      if ([4, 6, 9, 11].includes(parseInt(month)) && parseInt(day) == 31) {
+      if ([4, 6, 9, 11].includes(parseInt(month)) && parseInt(day) === 31) {
         return { message: "Date Does not exist.", status: "error" };
       } else {
-        if (parseInt(month) == 2 && parseInt(day) > 28) {
+        if (parseInt(month) === 2 && parseInt(day) > 28) {
           return { message: "Date Does not exist.", status: "error" };
         } else {
           return;
