@@ -11,19 +11,68 @@ import {
   Button,
   Heading,
 } from "grommet";
-
+import { Redirect } from "react-router-dom";
 import axios from "axios";
 import {
   dateMask,
   phoneNumberMask,
   nameMask,
   emailMask,
+  validationMasks,
 } from "../../scripts/InputMasks";
+import ContactInput from "./ContactInput";
 
 class CaseForm extends Component {
+  propertyCallback = (pvalue, index, name) => {
+    var value = { ...this.state.value };
+    if (name === "email") {
+      delete value.contacts[index].phone;
+    }
+    if (name === "phone") {
+      delete value.contacts[index].email;
+    }
+    value.contacts[index][name] = pvalue;
+    this.setState({ value });
+  };
+
+  getContacts = async () => {
+    var contactInputs = await this.state.value.contacts.map((item, index) => {
+      return (
+        <ContactInput
+          key={"contacts" + index}
+          index={index}
+          inputCallback={this.propertyCallback}
+        />
+      );
+    });
+    contactInputs.push(
+      <Button
+        key="addContact"
+        label="PushMe to add a another contact"
+        onClick={() => {
+          var value = { ...this.state.value };
+          value.contacts.push("");
+          this.setState({ value });
+          this.getContacts();
+        }}
+      ></Button>
+    );
+    this.setState({ contactInputs });
+  };
+
+  componentDidMount() {
+    this.getContacts();
+    // console.log(this.state.value.contactInputs);
+  }
   constructor(props) {
     super(props);
+
+    // componentDidMount() {
+    //   this.contacts();
+    // }
+
     this.state = {
+      redirect: false,
       value: {
         name: props.query.get("name") || "",
         address: props.query.get("address") || "",
@@ -31,11 +80,16 @@ class CaseForm extends Component {
         dob: props.query.get("dob") || "",
         doc: props.query.get("doc") || "",
         phone: props.query.get("phone") || "",
+        quarantineLocation: "",
+        contacts: [{ name: "" }],
       },
     };
   }
   render() {
     const { value } = this.state;
+    if (this.state.redirect) {
+      return <Redirect to="/postform" />;
+    }
     return (
       <Grommet>
         <Heading alignSelf="start">C-Trace</Heading>
@@ -45,9 +99,22 @@ class CaseForm extends Component {
           onChange={(nextValue) => {
             this.setState({ value: nextValue });
           }}
-          onReset={() => this.setState({ value: {} })}
+          onReset={() =>
+            this.setState({
+              value: {
+                name: "",
+                address: "",
+                email: "",
+                dob: "",
+                doc: "",
+                phone: "",
+                quarantineLocation: "",
+                contacts: [{ name: "" }],
+              },
+            })
+          }
           onSubmit={({ value }) => {
-            console.log("This isn't implemented yet.");
+            console.log(value);
             // axios
             //   .post("http://localhost:3000/api/case", value)
             //   .then(function (response) {
@@ -57,42 +124,56 @@ class CaseForm extends Component {
             //     console.log(error);
             //   })
             //   .then(function () {
-            //     // always executed
+            //     this.setState({redirect:true});
             //   });
           }}
         >
-          <FormField name="name" htmlFor="textinput-name" label="Full Name">
+          <FormField
+            name="name"
+            htmlFor="textinput-name"
+            label="Full Name"
+            required
+            validate={validationMasks.name}
+          >
             <MaskedInput
-              required
               id="textinput-name"
               name="name"
               mask={nameMask()}
               value={value.name}
             />
           </FormField>
-          <FormField name="address" htmlFor="textinput-address" label="Address">
+          <FormField
+            required
+            name="address"
+            htmlFor="textinput-address"
+            label="Address"
+          >
             <TextInput
-              required
               id="textinput-address"
               name="address"
               placeholder="1 MyStreet Road, MyTown MO 00000"
             />
           </FormField>
           <FormField
+            required
             name="quarantineLocation"
             htmlFor="textinput-address"
             label="quarantineLocation"
           >
             <TextInput
-              required
               id="textinput-address"
               name="quarantineLocation"
               placeholder="1 MyStreet Road, MyTown MO 00000"
             />
           </FormField>
-          <FormField name="email" htmlFor="textinput-email" label="email">
+          <FormField
+            name="email"
+            htmlFor="textinput-email"
+            label="email"
+            required
+            validate={validationMasks.email}
+          >
             <MaskedInput
-              required
               id="textinput-email"
               name="email"
               placeholder="example@email.com"
@@ -100,9 +181,14 @@ class CaseForm extends Component {
               value={value.email}
             />
           </FormField>
-          <FormField name="dob" htmlFor="textinput-dob" label="Date of Birth">
+          <FormField
+            name="dob"
+            htmlFor="textinput-dob"
+            label="Date of Birth"
+            required
+            validate={validationMasks.date}
+          >
             <MaskedInput
-              required
               id="textinput-dob"
               name="dob"
               mask={dateMask(value.dob)}
@@ -114,9 +200,11 @@ class CaseForm extends Component {
             name="doc"
             htmlFor="textinput-doc"
             label="Date of Close Contact"
+            required
+            validate={validationMasks.date}
           >
             <MaskedInput
-              required
+              // required
               id="textinput-doc"
               name="doc"
               mask={dateMask(value.doc)}
@@ -124,18 +212,25 @@ class CaseForm extends Component {
             />
           </FormField>
           <FormField
+            required
+            validate={validationMasks.phone}
             name="phone"
             htmlFor="textinput-phone"
             label="Phone Number"
           >
             <MaskedInput
-              required
               id="textinput-phone"
               name="phone"
               mask={phoneNumberMask()}
               value={value.phone}
             />
           </FormField>
+          <Box
+            background="light-1"
+            style={{ padding: "15px", borderRadius: "10px" }}
+          >
+            {this.state.contactInputs}
+          </Box>
           <Box direction="row" gap="medium">
             <Button type="submit" primary label="Submit" />
             <Button type="reset" label="Reset" />

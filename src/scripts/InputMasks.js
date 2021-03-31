@@ -2,26 +2,18 @@ function dateMask(d) {
   return [
     {
       length: [1, 2],
-      //   options: Array.from({ length: 12 }, (v, k) => k + 1),
       regexp: /^1[0,1-2]$|^0?[1-9]$|^0$/,
       placeholder: "mm",
     },
     { fixed: "/" },
     {
       length: [1, 2],
-      //   options: Array.from(
-      //     {
-      //       length: new Date(2019, parseInt(d.split('/')[0], 10), 0).getDate(),
-      //     },
-      //     (v, k) => k + 1,
-      //   ),
       regexp: /^[1-2][0-9]$|^3[0-1]$|^0?[1-9]$|^0$/,
       placeholder: "dd",
     },
     { fixed: "/" },
     {
       length: 4,
-      //   options: Array.from({ length: 100 }, (v, k) => 2019 - k),
       regexp: /^[1-2]$|^19$|^20$|^19[0-9]$|^20[0-9]$|^19[0-9][0-9]$|^20[0-9][0-9]$/,
       placeholder: "yyyy",
     },
@@ -81,4 +73,48 @@ function emailMask() {
     },
   ];
 }
-export { dateMask, phoneNumberMask, nameMask, emailMask };
+
+const validationMasks = {
+  phone: {
+    regexp: /^\([0-9]{3}\) [0-9]{3}-[0-9]{4}$/,
+    message: "Invalid Phone Number",
+    status: "error",
+  },
+  email: {
+    regexp: /^[A-z0-9\.-]*@([A-z0-9\-])*(\.[A-z0-9]*)*$/,
+    message: "Invalid Email",
+    status: "error",
+  },
+  name: {
+    regexp: /^[A-z']* [A-z']*( [A-z']*)*$/,
+    message: "Please Enter Full Name",
+    status: "error",
+  },
+  date: (value) => {
+    let ar = value.split("/");
+    if (ar.length != 3) {
+      return { message: "Invalid Date", status: "error" };
+    } else {
+      let month = ar[0],
+        day = ar[1],
+        year = ar[2];
+      if (
+        year < new Date().getFullYear() - 100 ||
+        year > new Date().getFullYear()
+      ) {
+        return { message: "Year invalid", status: "error" };
+      }
+      if ([4, 6, 9, 11].includes(parseInt(month)) && parseInt(day) == 31) {
+        return { message: "Date Does not exist.", status: "error" };
+      } else {
+        if (parseInt(month) == 2 && parseInt(day) > 28) {
+          return { message: "Date Does not exist.", status: "error" };
+        } else {
+          return;
+        }
+      }
+    }
+  },
+};
+
+export { dateMask, phoneNumberMask, nameMask, emailMask, validationMasks };
