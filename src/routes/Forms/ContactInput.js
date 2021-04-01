@@ -1,11 +1,17 @@
-import { Grid, FormField, TextInput, RadioButtonGroup } from "grommet";
+import {
+  Grid,
+  FormField,
+  TextInput,
+  RadioButtonGroup,
+  MaskedInput,
+} from "grommet";
 import React from "react";
-// import {
-//   phoneNumberMask,
-//   nameMask,
-//   emailMask,
-//   validationMasks,
-// } from "../../scripts/InputMasks";
+import {
+  phoneNumberMask,
+  nameMask,
+  emailMask,
+  validationMasks,
+} from "../../scripts/InputMasks";
 export default function ContactInput(props) {
   let index = props.index;
   const [value, setValue] = React.useState("Phone");
@@ -30,7 +36,8 @@ export default function ContactInput(props) {
         htmlFor={"textinput-contacts-" + index}
         label={"Close Contact Info " + (index + 1)}
       >
-        <TextInput
+        <MaskedInput
+          mask={nameMask()}
           id={"textinput-contacts-" + index}
           placeholder="Full name"
           name="contactName"
@@ -57,7 +64,8 @@ export default function ContactInput(props) {
         htmlFor={"textinput-contactinfo-" + index}
         label={value}
       >
-        <TextInput
+        <MaskedInput
+          mask={value === "Email" ? emailMask() : phoneNumberMask()}
           size="small"
           id={"textinput-contactinfo-" + index}
           name="info"
@@ -80,7 +88,11 @@ export default function ContactInput(props) {
         name="selector"
         options={["Email", "Phone"]}
         value={value}
-        onChange={(event) => setValue(event.target.value)}
+        onChange={(event) => {
+          setValue(event.target.value);
+          setInfo("");
+          props.inputCallback(event.target.value, index, "");
+        }}
       />
     </Grid>
   );

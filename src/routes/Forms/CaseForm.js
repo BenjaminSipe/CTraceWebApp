@@ -51,7 +51,7 @@ class CaseForm extends Component {
         label="PushMe to add a another contact"
         onClick={() => {
           var value = { ...this.state.value };
-          value.contacts.push("");
+          value.contacts.push({ name: "" });
           this.setState({ value });
           this.getContacts();
         }}
