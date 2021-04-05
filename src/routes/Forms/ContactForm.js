@@ -52,7 +52,9 @@ class ContactForm extends Component {
             onChange={(nextValue) => {
               this.setState({ value: nextValue });
             }}
-            onReset={() => this.setState({ value: {} })}
+            onReset={() => {
+              this.setState({ value: {} });
+            }}
             onSubmit={({ value }) => {
               axios
                 .post("http://localhost:3000/api/contact", value)
@@ -78,26 +80,26 @@ class ContactForm extends Component {
             </FormField>
             <FormField
               name="address"
-              htmlFor="textinput-address"
+              htmlFor="textinput-address1"
               label="Address"
             >
               <TextInput
                 required
-                id="textinput-address"
+                id="textinput-address1"
                 name="address"
                 placeholder="1 MyStreet Road, MyTown MO 00000"
               />
             </FormField>
             <FormField
               name="quarantineLocation"
-              htmlFor="textinput-address"
+              htmlFor="textinput-address2"
               label="quarantineLocation"
             >
               <TextInput
                 required
-                id="textinput-address"
+                id="textinput-address2"
                 name="quarantineLocation"
-                placeholder="1 MyStreet Road, MyTown MO 00000"
+                placeholder="Campus"
               />
             </FormField>
             <FormField name="email" htmlFor="textinput-email" label="email">

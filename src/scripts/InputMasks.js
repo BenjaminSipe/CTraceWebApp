@@ -20,6 +20,28 @@ function dateMask(d) {
   ];
 }
 
+function optDateMask(d) {
+  return [
+    {
+      length: [1, 2],
+      regexp: /^1[0,1-2]$|^0?[1-9]$|^0$/,
+      placeholder: "mm",
+    },
+    { fixed: "/" },
+    {
+      length: [1, 2],
+      regexp: /^[1-2][0-9]$|^3[0-1]$|^0?[1-9]$|^0$/,
+      placeholder: "dd",
+    },
+    { fixed: "/" },
+    {
+      length: 4,
+      regexp: /^[1-2]$|^19$|^20$|^19[0-9]$|^20[0-9]$|^19[0-9][0-9]$|^20[0-9][0-9]$/,
+      placeholder: "yyyy",
+    },
+  ];
+}
+
 function phoneNumberMask() {
   return [
     { fixed: "(" },
@@ -74,6 +96,13 @@ function emailMask() {
   ];
 }
 
+function phoneOrEmailMask(value) {
+  if (value === "phone") {
+    return phoneNumberMask();
+  } else {
+    return emailMask();
+  }
+}
 const validationMasks = {
   phone: {
     regexp: /^\([0-9]{3}\) [0-9]{3}-[0-9]{4}$/,
@@ -115,6 +144,42 @@ const validationMasks = {
       }
     }
   },
+  optDate: (value) => {
+    if (value === "") {
+      return;
+    }
+    let ar = value.split("/");
+    if (ar.length !== 3) {
+      return { message: "Invalid Date", status: "error" };
+    } else {
+      let month = ar[0],
+        day = ar[1],
+        year = ar[2];
+      if (
+        year < new Date().getFullYear() - 100 ||
+        year > new Date().getFullYear()
+      ) {
+        return { message: "Year invalid", status: "error" };
+      }
+      if ([4, 6, 9, 11].includes(parseInt(month)) && parseInt(day) === 31) {
+        return { message: "Date Does not exist.", status: "error" };
+      } else {
+        if (parseInt(month) === 2 && parseInt(day) > 28) {
+          return { message: "Date Does not exist.", status: "error" };
+        } else {
+          return;
+        }
+      }
+    }
+  },
 };
 
-export { dateMask, phoneNumberMask, nameMask, emailMask, validationMasks };
+export {
+  dateMask,
+  optDateMask,
+  phoneNumberMask,
+  phoneOrEmailMask,
+  nameMask,
+  emailMask,
+  validationMasks,
+};

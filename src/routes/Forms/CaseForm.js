@@ -1,7 +1,8 @@
-// import logo from './logo.svg';
 import "../../App.css";
 import React, { Component } from "react";
+import { GrAdd } from "react-icons/gr";
 import {
+  CheckBoxGroup,
   Grommet,
   MaskedInput,
   TextInput,
@@ -14,6 +15,7 @@ import {
 import { Redirect } from "react-router-dom";
 // import axios from "axios";
 import {
+  optDateMask,
   dateMask,
   phoneNumberMask,
   nameMask,
@@ -23,35 +25,53 @@ import {
 import ContactInput from "./ContactInput";
 
 class CaseForm extends Component {
-  propertyCallback = (pvalue, index, name) => {
+  getProp = (index, name) => {
+    // console.log(index, name);
+    return this.state.value.contacts[index][name];
+  };
+  setProp = (index, name, pvalue) => {
     var value = { ...this.state.value };
-    if (name === "email") {
-      delete value.contacts[index].phone;
-    }
-    if (name === "phone") {
-      delete value.contacts[index].email;
-    }
     value.contacts[index][name] = pvalue;
     this.setState({ value });
+    // console.log(value);
+  };
+  deleteContact = (index) => {
+    console.log(index);
+    var value = { ...this.state.value };
+    value.contacts.splice(index, 1);
+    this.setState({ value });
+    this.getContacts();
   };
 
   getContacts = async () => {
     var contactInputs = await this.state.value.contacts.map((item, index) => {
       return (
-        <ContactInput
-          key={"contacts" + index}
-          index={index}
-          inputCallback={this.propertyCallback}
-        />
+        <Box key={"contacts" + index}>
+          <ContactInput
+            callbacks={{
+              deleteContact: this.deleteContact,
+              getProp: this.getProp,
+              setProp: this.setProp,
+            }}
+            index={index}
+          />
+          {index !== this.state.value.contacts.length - 1 ? (
+            <Box background="gray" width="100%" height="1px"></Box>
+          ) : (
+            ""
+          )}
+        </Box>
       );
     });
+
     contactInputs.push(
       <Button
+        alignSelf="center"
         key="addContact"
-        label="PushMe to add a another contact"
+        icon={<GrAdd />}
         onClick={() => {
           var value = { ...this.state.value };
-          value.contacts.push({ name: "" });
+          value.contacts.push({ name: "", doc: "", info: "", type: "Phone" });
           this.setState({ value });
           this.getContacts();
         }}
@@ -78,10 +98,12 @@ class CaseForm extends Component {
         address: props.query.get("address") || "",
         email: props.query.get("email") || "",
         dob: props.query.get("dob") || "",
-        doc: props.query.get("doc") || "",
         phone: props.query.get("phone") || "",
         quarantineLocation: "",
-        contacts: [{ name: "" }],
+        contacts: [{ name: "", doc: "", info: "", type: "Phone" }],
+        dot: "",
+        doso: "",
+        symptoms: [],
       },
     };
   }
@@ -99,20 +121,30 @@ class CaseForm extends Component {
           onChange={(nextValue) => {
             this.setState({ value: nextValue });
           }}
-          onReset={() =>
+          onReset={() => {
             this.setState({
               value: {
                 name: "",
                 address: "",
                 email: "",
                 dob: "",
-                doc: "",
+                dot: "",
+                doso: "",
                 phone: "",
                 quarantineLocation: "",
-                contacts: [{ name: "" }],
+                contacts: [
+                  {
+                    name: "",
+                    doc: "",
+                    info: "",
+                    type: "Phone",
+                  },
+                ],
+
+                symptoms: [],
               },
-            })
-          }
+            });
+          }}
           onSubmit={({ value }) => {
             console.log(value);
             // axios
@@ -136,6 +168,7 @@ class CaseForm extends Component {
             validate={validationMasks.name}
           >
             <MaskedInput
+              autoFocus
               id="textinput-name"
               name="name"
               mask={nameMask()}
@@ -158,18 +191,18 @@ class CaseForm extends Component {
             required
             name="quarantineLocation"
             htmlFor="textinput-address"
-            label="quarantineLocation"
+            label="Quarentine Location"
           >
             <TextInput
               id="textinput-address"
               name="quarantineLocation"
-              placeholder="1 MyStreet Road, MyTown MO 00000"
+              placeholder="Campus or Home"
             />
           </FormField>
           <FormField
             name="email"
             htmlFor="textinput-email"
-            label="email"
+            label="Email"
             required
             validate={validationMasks.email}
           >
@@ -197,18 +230,56 @@ class CaseForm extends Component {
             />
           </FormField>
           <FormField
-            name="doc"
-            htmlFor="textinput-doc"
-            label="Date of Close Contact"
-            required
-            validate={validationMasks.date}
+            name="dot"
+            htmlFor="textinput-dot"
+            label="Date of Covid Test, leave blank for no test."
+            validate={validationMasks.optDate}
           >
             <MaskedInput
-              // required
-              id="textinput-doc"
-              name="doc"
-              mask={dateMask(value.doc)}
-              value={value.doc}
+              id="textinput-dot"
+              name="dot"
+              mask={optDateMask(value.dot)}
+              value={value.dot}
+            />
+          </FormField>
+          <FormField name="symptoms" htmlFor="symptoms-input" label="Symptoms">
+            <CheckBoxGroup
+              labelKey="item"
+              id="symptoms-input"
+              name="contacts"
+              value={value.symptoms}
+              options={[
+                { item: "Maui", value: "Maui" },
+                { item: "Kauai", value: "Kauai" },
+                { item: "Oahu", value: "Oahu" },
+                { item: "test", value: "Test" },
+              ]}
+              onChange={(e) => {
+                console.log(e.value);
+                var symptoms = e.value;
+                var value = { ...this.state.value, symptoms };
+                this.setState({ value });
+                console.log(this.state.value);
+              }}
+            />
+            <Box direction="row">
+              <Button margin="xsmall">
+                <GrAdd />
+              </Button>
+              <TextInput placeholder="other"></TextInput>
+            </Box>
+          </FormField>
+          <FormField
+            name="doso"
+            htmlFor="textinput-doso"
+            label="Date of Symptom Onset."
+            validate={validationMasks.optDate}
+          >
+            <MaskedInput
+              id="textinput-doso"
+              name="doso"
+              mask={optDateMask(value.doso)}
+              value={value.doso}
             />
           </FormField>
           <FormField
@@ -227,7 +298,11 @@ class CaseForm extends Component {
           </FormField>
           <Box
             background="light-1"
-            style={{ padding: "15px", borderRadius: "10px" }}
+            style={{
+              alignSelf: "end",
+              padding: "15px",
+              borderRadius: "10px",
+            }}
           >
             {this.state.contactInputs}
           </Box>
