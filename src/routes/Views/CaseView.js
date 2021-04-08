@@ -32,12 +32,14 @@ export default class CaseView extends Component {
           background="light-1"
           style={{ padding: "15px", borderRadius: "10px" }}
         >
-          <Box direction="row">
+          <Box direction="row" margin="10px">
             <Button
+              style={{ flexDirection: "row", flex: 1, borderRadius: 0 }}
               label="Cases"
               onClick={() => this.setState({ view: "cases" })}
             ></Button>
             <Button
+              style={{ flexDirection: "row", flex: 1, borderRadius: 0 }}
               label="Contacts"
               onClick={() => this.setState({ view: "contacts" })}
             ></Button>
