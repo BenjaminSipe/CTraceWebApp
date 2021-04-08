@@ -6,7 +6,6 @@ import {
   ContactForm,
   PostForm,
   CaseView,
-  // ContactView,
   MessageCases,
   MessageContacts,
   RecoveredView,
@@ -38,9 +37,6 @@ function App() {
           <Route path="/Dashboard">
             <CaseView />
           </Route>
-          {/* <Route path="/ContactView">
-            <ContactView></ContactView>
-          </Route> */}
           <Route path="/MessageCases">
             <MessageCases />
           </Route>

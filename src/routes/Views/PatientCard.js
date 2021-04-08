@@ -15,7 +15,7 @@ export default function PatientCard(props) {
   const { name, _id, dob } = props.data;
   return (
     <Button style={{ borderRadius: "12px" }}>
-      <Card background="light-1" height="200px">
+      <Card background="light-1" height="220px">
         {name && _id ? (
           <CardBody style={{ paddingTop: "6px" }} align="center">
             <Avatar size="xlarge" background="neutral-1">
