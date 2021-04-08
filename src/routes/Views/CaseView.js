@@ -1,32 +1,58 @@
-import React from "react";
-import { Grommet, Grid, Box } from "grommet";
+import React, { Component } from "react";
+import { Grommet, Grid, Box, Button } from "grommet";
 import PatientCard from "./PatientCard";
+import { getCases, getContacts } from "../../scripts/API";
 
-export default function CaseView() {
-  const tempData = [
-    { name: "Benjamin Sipe", _id: "1234", date: "3/27/2021" },
-    { name: "David", _id: "1111" },
-    {},
-  ];
-  const items = [];
+export default class CaseView extends Component {
+  state = { view: "cases" };
 
-  for (var i = 0; i < tempData.length; i++) {
-    items.push(PatientCard({ data: tempData[i] }));
+  cases = async () => {
+    var cases = await (await getCases()).map((item) => {
+      return <PatientCard data={item} key={item._id}></PatientCard>;
+    });
+    this.setState({ cases });
+  };
+
+  contacts = async () => {
+    var contacts = await (await getContacts()).map((item) => {
+      return <PatientCard data={item} key={item._id}></PatientCard>;
+    });
+    this.setState({ contacts });
+  };
+
+  componentDidMount() {
+    this.cases();
+    this.contacts();
   }
-  return (
-    <Grommet style={{ margin: "10px" }}>
-      <Box
-        background="light-1"
-        style={{ padding: "15px", borderRadius: "10px" }}
-      >
-        <Grid
-          rows={["small"]}
-          columns="120px"
-          gap={{ row: "medium", column: "medium" }}
+
+  render() {
+    return (
+      <Grommet style={{ margin: "10px" }}>
+        <Box
+          background="light-1"
+          style={{ padding: "15px", borderRadius: "10px" }}
         >
-          {items}
-        </Grid>
-      </Box>
-    </Grommet>
-  );
+          <Box direction="row">
+            <Button
+              label="Cases"
+              onClick={() => this.setState({ view: "cases" })}
+            ></Button>
+            <Button
+              label="Contacts"
+              onClick={() => this.setState({ view: "contacts" })}
+            ></Button>
+          </Box>
+          <Grid
+            rows={["small"]}
+            columns="120px"
+            gap={{ row: "medium", column: "medium" }}
+          >
+            {this.state.view === "cases"
+              ? this.state.cases
+              : this.state.contacts}
+          </Grid>
+        </Box>
+      </Grommet>
+    );
+  }
 }

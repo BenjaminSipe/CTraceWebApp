@@ -12,7 +12,7 @@ import {
 // import LineItem from "./LineItem";
 
 export default function PatientCard(props) {
-  const { name, _id, date } = props.data;
+  const { name, _id, dob } = props.data;
   return (
     <Button style={{ borderRadius: "12px" }}>
       <Card background="light-1" height="200px">
@@ -26,7 +26,7 @@ export default function PatientCard(props) {
             <Text style={{ paddingTop: "12px" }} textAlign="center">
               <Text>{name}</Text>
               <br />
-              {date ? <Text color="gray">{date}</Text> : ""}
+              {dob ? <Text color="gray">{dob}</Text> : ""}
             </Text>
           </CardBody>
         ) : (

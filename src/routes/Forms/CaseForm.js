@@ -144,27 +144,51 @@ class CaseForm extends Component {
                 "Diarrhea",
               ],
               value: {
-                name: "",
-                address: "",
-                email: "",
-                dob: "",
-                dot: "",
-                doso: "",
-                phone: "",
-                quarantineLocation: "",
+                name: "Ben Sipe",
+                address: "3533 Newcastle Ct.",
+                email: "benjaminSipe@cofo.edu",
+                dob: "03/15/1999",
+                phone: "(111) 111-1111",
+                quarantineLocation: "Campus",
                 contacts: [
                   {
-                    name: "",
-                    doc: "",
-                    info: "",
+                    name: "Benjamin Sipe",
+                    doc: "03/15/1999",
+                    info: "(222) 222-2222",
                     type: "Phone",
                   },
                 ],
-                symptoms: [],
+                dot: "03/15/1999",
+                doso: "03/15/1999",
+                symptoms: [
+                  "Cough",
+                  "Muscle or body aches",
+                  "Nausea or vomiting",
+                ],
               },
+              // value: {
+              //   name: "",
+              //   address: "",
+              //   email: "",
+              //   dob: "",
+              //   dot: "",
+              //   doso: "",
+              //   phone: "",
+              //   quarantineLocation: "",
+              //   contacts: [
+              //     {
+              //       name: "",
+              //       doc: "",
+              //       info: "",
+              //       type: "Phone",
+              //     },
+              //   ],
+              //   symptoms: [],
+              // },
             });
           }}
           onSubmit={({ value }) => {
+            console.log(value);
             axios
               .post("http://localhost:3000/api/case", value)
               .then(function (response) {
@@ -173,7 +197,7 @@ class CaseForm extends Component {
               .catch(function (error) {
                 console.log(error);
               })
-              .then(function () {
+              .then(() => {
                 this.setState({ redirect: true });
               });
           }}

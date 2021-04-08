@@ -9,4 +9,10 @@ function getContacts() {
     .get("http://localhost:3000/api/contact/all")
     .then((res) => res.data);
 }
-export { getContactByName, getContacts };
+
+function getCases() {
+  return axios
+    .get("http://localhost:3000/api/case/all")
+    .then((res) => res.data);
+}
+export { getContactByName, getContacts, getCases };
