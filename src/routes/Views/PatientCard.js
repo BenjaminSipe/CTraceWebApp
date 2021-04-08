@@ -7,7 +7,7 @@ import {
   Avatar,
   // Paragraph,
   Text,
-  // Box,
+  Box,
 } from "grommet";
 // import LineItem from "./LineItem";
 
@@ -15,19 +15,31 @@ export default function PatientCard(props) {
   const { name, _id, dob } = props.data;
   return (
     <Button style={{ borderRadius: "12px" }}>
-      <Card background="light-1" height="220px">
+      <Card background="light-1" height="200px">
         {name && _id ? (
           <CardBody style={{ paddingTop: "6px" }} align="center">
-            <Avatar size="xlarge" background="neutral-1">
-              {name.split(" ").length > 1
-                ? name.split(" ")[0][0] + name.split(" ")[1][0]
-                : name[0]}
-            </Avatar>
-            <Text style={{ paddingTop: "12px" }} textAlign="center">
-              <Text>{name}</Text>
-              <br />
-              {dob ? <Text color="gray">{dob}</Text> : ""}
+            <Box height="96px" width="96px">
+              <Avatar fill background="neutral-1">
+                <Text size="xlarge">
+                  {name.split(" ").length > 1
+                    ? name.split(" ")[0][0] + name.split(" ")[1][0]
+                    : name[0]}
+                </Text>
+              </Avatar>
+            </Box>
+            <Text
+              style={{
+                height: "20px",
+                paddingTop: "12px",
+                paddingBottom: "5px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+              textAlign="center"
+            >
+              {name}
             </Text>
+            {dob ? <Text color="gray">{dob}</Text> : ""}
           </CardBody>
         ) : (
           <CardBody justify="center">

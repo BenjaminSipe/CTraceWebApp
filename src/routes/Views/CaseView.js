@@ -45,7 +45,7 @@ export default class CaseView extends Component {
             ></Button>
           </Box>
           <Grid
-            rows={["220px"]}
+            rows={["200px"]}
             columns="120px"
             gap={{ row: "medium", column: "medium" }}
           >
