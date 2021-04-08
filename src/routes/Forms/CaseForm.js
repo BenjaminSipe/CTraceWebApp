@@ -13,7 +13,7 @@ import {
   Heading,
 } from "grommet";
 import { Redirect } from "react-router-dom";
-// import axios from "axios";
+import axios from "axios";
 import {
   optDateMask,
   dateMask,
@@ -26,17 +26,14 @@ import ContactInput from "./ContactInput";
 
 class CaseForm extends Component {
   getProp = (index, name) => {
-    // console.log(index, name);
     return this.state.value.contacts[index][name];
   };
   setProp = (index, name, pvalue) => {
     var value = { ...this.state.value };
     value.contacts[index][name] = pvalue;
     this.setState({ value });
-    // console.log(value);
   };
   deleteContact = (index) => {
-    console.log(index);
     var value = { ...this.state.value };
     value.contacts.splice(index, 1);
     this.setState({ value });
@@ -82,17 +79,26 @@ class CaseForm extends Component {
 
   componentDidMount() {
     this.getContacts();
-    // console.log(this.state.value.contactInputs);
   }
   constructor(props) {
     super(props);
 
-    // componentDidMount() {
-    //   this.contacts();
-    // }
-
     this.state = {
       redirect: false,
+      addSymptom: "",
+      symptomOptions: [
+        "Fever or chills",
+        "Cough",
+        "Shortness of breath or difficulty breathing",
+        "Fatigue",
+        "Muscle or body aches",
+        "Headache",
+        "New loss of taste or smell",
+        "Sore throat",
+        "Congestion or runny nose",
+        "Nausea or vomiting",
+        "Diarrhea",
+      ],
       value: {
         name: props.query.get("name") || "",
         address: props.query.get("address") || "",
@@ -123,6 +129,20 @@ class CaseForm extends Component {
           }}
           onReset={() => {
             this.setState({
+              addSymptom: "",
+              symptomOptions: [
+                "Fever or chills",
+                "Cough",
+                "Shortness of breath or difficulty breathing",
+                "Fatigue",
+                "Muscle or body aches",
+                "Headache",
+                "New loss of taste or smell",
+                "Sore throat",
+                "Congestion or runny nose",
+                "Nausea or vomiting",
+                "Diarrhea",
+              ],
               value: {
                 name: "",
                 address: "",
@@ -140,24 +160,22 @@ class CaseForm extends Component {
                     type: "Phone",
                   },
                 ],
-
                 symptoms: [],
               },
             });
           }}
           onSubmit={({ value }) => {
-            console.log(value);
-            // axios
-            //   .post("http://localhost:3000/api/case", value)
-            //   .then(function (response) {
-            //     console.log(response);
-            //   })
-            //   .catch(function (error) {
-            //     console.log(error);
-            //   })
-            //   .then(function () {
-            //     this.setState({redirect:true});
-            //   });
+            axios
+              .post("http://localhost:3000/api/case", value)
+              .then(function (response) {
+                console.log(response);
+              })
+              .catch(function (error) {
+                console.log(error);
+              })
+              .then(function () {
+                this.setState({ redirect: true });
+              });
           }}
         >
           <FormField
@@ -226,7 +244,6 @@ class CaseForm extends Component {
               name="dob"
               mask={dateMask(value.dob)}
               value={value.dob}
-              // onKeyUp={(e) => console.log(e.keyCode)}
             />
           </FormField>
           <FormField
@@ -244,29 +261,51 @@ class CaseForm extends Component {
           </FormField>
           <FormField name="symptoms" htmlFor="symptoms-input" label="Symptoms">
             <CheckBoxGroup
-              labelKey="item"
               id="symptoms-input"
               name="contacts"
               value={value.symptoms}
-              options={[
-                { item: "Maui", value: "Maui" },
-                { item: "Kauai", value: "Kauai" },
-                { item: "Oahu", value: "Oahu" },
-                { item: "test", value: "Test" },
-              ]}
+              options={this.state.symptomOptions}
               onChange={(e) => {
-                console.log(e.value);
                 var symptoms = e.value;
                 var value = { ...this.state.value, symptoms };
                 this.setState({ value });
-                console.log(this.state.value);
               }}
             />
+
             <Box direction="row">
-              <Button margin="xsmall">
-                <GrAdd />
+              <Button
+                onClick={() => {
+                  if (this.state.addSymptom !== "") {
+                    this.state.value.symptoms.push(this.state.addSymptom);
+                    this.setState({
+                      symptomOptions: [
+                        ...this.state.symptomOptions,
+                        this.state.addSymptom,
+                      ],
+                    });
+
+                    this.setState({ addSymptom: "" });
+                  }
+                }}
+              >
+                <Box
+                  justify="center"
+                  align="center"
+                  width="xxsmall"
+                  height="xxsmall"
+                >
+                  <GrAdd />
+                </Box>
               </Button>
-              <TextInput placeholder="other"></TextInput>
+              <TextInput
+                value={this.state.addSymptom}
+                placeholder="other"
+                onChange={(event) =>
+                  this.setState({
+                    addSymptom: event.target.value,
+                  })
+                }
+              ></TextInput>
             </Box>
           </FormField>
           <FormField

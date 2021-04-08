@@ -16,7 +16,7 @@ import {
   phoneOrEmailMask,
 } from "../../scripts/InputMasks";
 export default function ContactInput(props) {
-  let index = props.index;
+  let [index, setIndex] = React.useState(props.index);
   let [x, setX] = React.useState(true);
 
   return (
@@ -39,8 +39,6 @@ export default function ContactInput(props) {
         name={"Contact-name-" + index}
         htmlFor={"textinput-contacts-" + index}
         label={"Close Contact Info " + (index + 1)}
-        // required
-        // validate={validationMasks.name}
       >
         <MaskedInput
           mask={nameMask()}
@@ -67,14 +65,9 @@ export default function ContactInput(props) {
         label={props.callbacks.getProp(index, "type")}
       >
         <MaskedInput
-          mask={
-            // typeof props.callbacks.getProp(index, "email") === "string"
-            //   ? emailMask()
-            //   : phoneNumberMask()
-            phoneOrEmailMask(
-              props.callbacks.getProp(index, "type").toLowerCase()
-            )
-          }
+          mask={phoneOrEmailMask(
+            props.callbacks.getProp(index, "type").toLowerCase()
+          )}
           size="small"
           id={"textinput-contactinfo-" + index}
           name="info"
@@ -93,7 +86,8 @@ export default function ContactInput(props) {
       <RadioButtonGroup
         style={{ padding: "10px" }}
         gridArea="selector"
-        name="selector"
+        id={"selector-" + index}
+        name={"selector-" + index}
         options={["Email", "Phone"]}
         value={props.callbacks.getProp(index, "type")}
         onChange={(event) => {
@@ -104,14 +98,12 @@ export default function ContactInput(props) {
       />
       <FormField
         gridArea="third"
-        name="doc"
+        name="contactdoc"
         htmlFor={"textinput-contactdoc-" + index}
         label="Date of Contact"
-        required
-        validate={validationMasks.date}
       >
         <MaskedInput
-          id="textinput-contactdoc"
+          id={"textinput-contactdoc-" + index}
           name="contactDoc"
           mask={dateMask(props.callbacks.getProp(index, "doc"))}
           value={props.callbacks.getProp(index, "doc")}
