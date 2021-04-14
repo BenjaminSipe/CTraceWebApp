@@ -1,5 +1,7 @@
+//Marked for Deletion
+
 import React, { Component } from "react";
-import { Grommet, Grid, Box } from "grommet";
+import { Grid, Box } from "grommet";
 import PatientCard from "./PatientCard";
 import { getContacts } from "../../scripts/API";
 
@@ -19,7 +21,7 @@ export default class ContactView extends Component {
 
   render() {
     return (
-      <Grommet style={{ margin: "10px" }}>
+      <div style={{ margin: "10px" }}>
         <Box
           background="light-1"
           style={{ padding: "15px", borderRadius: "10px" }}
@@ -32,7 +34,7 @@ export default class ContactView extends Component {
             {this.state.cards}
           </Grid>
         </Box>
-      </Grommet>
+      </div>
     );
   }
 }

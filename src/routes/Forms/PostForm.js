@@ -1,6 +1,6 @@
 import React from "react";
-import { Grommet } from "grommet";
+import { Text } from "grommet";
 
 export default function PostForm() {
-  return <Grommet>This is the Post Form Page</Grommet>;
+  return <Text>This is the Post Form Page</Text>;
 }

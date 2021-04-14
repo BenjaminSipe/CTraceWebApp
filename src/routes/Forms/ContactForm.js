@@ -2,7 +2,6 @@
 import "../../App.css";
 import React, { Component } from "react";
 import {
-  Grommet,
   MaskedInput,
   TextInput,
   Form,
@@ -44,7 +43,7 @@ class ContactForm extends Component {
       return <Redirect to="/postform" />;
     } else {
       return (
-        <Grommet>
+        <div>
           <Heading alignSelf="start">C-Trace</Heading>
           <h2>Close Contact Form</h2>
           <Form
@@ -99,7 +98,7 @@ class ContactForm extends Component {
                 required
                 id="textinput-address2"
                 name="quarantineLocation"
-                placeholder="Campus"
+                placeholder="Campus or Home"
               />
             </FormField>
             <FormField name="email" htmlFor="textinput-email" label="email">
@@ -153,7 +152,7 @@ class ContactForm extends Component {
               <Button type="reset" label="Reset" />
             </Box>
           </Form>
-        </Grommet>
+        </div>
       );
     }
   }

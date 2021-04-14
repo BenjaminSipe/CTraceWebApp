@@ -14,7 +14,10 @@ import {
 export default function PatientCard(props) {
   const { name, _id, dob } = props.data;
   return (
-    <Button style={{ borderRadius: "12px" }}>
+    <Button
+      onClick={() => props.openModal(props.data)}
+      style={{ borderRadius: "12px" }}
+    >
       <Card background="light-1" height="200px">
         {name && _id ? (
           <CardBody style={{ paddingTop: "6px" }} align="center">

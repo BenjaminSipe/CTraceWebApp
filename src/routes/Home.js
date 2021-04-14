@@ -1,6 +1,6 @@
 import React from "react";
-import { Grommet } from "grommet";
+import { Text } from "grommet";
 
 export default function Home() {
-  return <Grommet>This is the Home Page</Grommet>;
+  return <Text>This is the Home Page</Text>;
 }

@@ -1,33 +1,62 @@
 import React, { Component } from "react";
-import { Grommet, Grid, Box, Button } from "grommet";
+import {
+  Grid,
+  Box,
+  Button,
+  Text,
+  Layer,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+} from "grommet";
 import PatientCard from "./PatientCard";
 import { getCases, getContacts } from "../../scripts/API";
+import PatientModalCardBody from "./PatientModalCardBody";
 
 export default class CaseView extends Component {
-  state = { view: "cases" };
-
-  cases = async () => {
-    var cases = await (await getCases()).map((item) => {
-      return <PatientCard data={item} key={item._id}></PatientCard>;
-    });
-    this.setState({ cases });
+  state = {
+    view: "cases",
+    cases: null,
+    contacts: null,
+    modalData: {},
+    showModal: false,
   };
 
-  contacts = async () => {
-    var contacts = await (await getContacts()).map((item) => {
-      return <PatientCard data={item} key={item._id}></PatientCard>;
-    });
-    this.setState({ contacts });
+  // <Button label="show" onClick={() => setShow(true)} />
+
+  loadData = async (data) => {
+    if (!this.state[data]) {
+      var values = await (data === "contacts"
+        ? await getContacts()
+        : await getCases()
+      ).map((item) => {
+        return (
+          <PatientCard
+            openModal={() => {
+              this.setState({ showModal: true });
+              this.setState({ modalData: item });
+            }}
+            data={item}
+            key={item._id}
+          ></PatientCard>
+        );
+      });
+      if (data === "contacts") {
+        this.setState({ contacts: values });
+      } else {
+        this.setState({ cases: values });
+      }
+    }
   };
 
   componentDidMount() {
-    this.cases();
-    this.contacts();
+    this.loadData(this.state.view);
   }
 
   render() {
     return (
-      <Grommet style={{ margin: "10px" }}>
+      <div style={{ margin: "10px" }}>
         <Box
           background="light-1"
           style={{ padding: "15px", borderRadius: "10px" }}
@@ -36,12 +65,18 @@ export default class CaseView extends Component {
             <Button
               style={{ flexDirection: "row", flex: 1, borderRadius: 0 }}
               label="Cases"
-              onClick={() => this.setState({ view: "cases" })}
+              onClick={() => {
+                this.setState({ view: "cases" });
+                this.loadData("cases");
+              }}
             ></Button>
             <Button
               style={{ flexDirection: "row", flex: 1, borderRadius: 0 }}
               label="Contacts"
-              onClick={() => this.setState({ view: "contacts" })}
+              onClick={() => {
+                this.setState({ view: "contacts" });
+                this.loadData("contacts");
+              }}
             ></Button>
           </Box>
           <Grid
@@ -49,12 +84,22 @@ export default class CaseView extends Component {
             columns="120px"
             gap={{ row: "medium", column: "medium" }}
           >
-            {this.state.view === "cases"
-              ? this.state.cases
-              : this.state.contacts}
+            {this.state[this.state.view]}
           </Grid>
         </Box>
-      </Grommet>
+        {this.state.showModal && (
+          <Layer
+            onEsc={() => this.setState({ showModal: false })}
+            onClickOutside={() => this.setState({ showModal: false })}
+          >
+            {/* THIS IS WHERE MY MODAL GOES */}
+            <PatientModalCardBody
+              patientData={this.state.modalData}
+              close={() => this.setState({ showModal: false })}
+            />
+          </Layer>
+        )}
+      </div>
     );
   }
 }

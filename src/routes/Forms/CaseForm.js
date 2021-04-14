@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import { GrAdd } from "react-icons/gr";
 import {
   CheckBoxGroup,
-  Grommet,
   MaskedInput,
   TextInput,
   Form,
@@ -119,7 +118,7 @@ class CaseForm extends Component {
       return <Redirect to="/postform" />;
     }
     return (
-      <Grommet>
+      <div>
         <Heading alignSelf="start">C-Trace</Heading>
         <h2>COVID19 Positive Form</h2>
         <Form
@@ -374,7 +373,7 @@ class CaseForm extends Component {
             <Button type="reset" label="Reset" />
           </Box>
         </Form>
-      </Grommet>
+      </div>
     );
   }
 }

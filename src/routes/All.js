@@ -2,7 +2,7 @@ import CaseForm from "./Forms/CaseForm";
 import ContactForm from "./Forms/ContactForm";
 import PostForm from "./Forms/PostForm";
 import CaseView from "./Views/CaseView";
-import ContactView from "./Views/ContactView";
+import ContactView from "./Views/ContactView"; //Marked for deletion
 import MessageCases from "./Views/MessageCases";
 import MessageContacts from "./Views/MessageContacts";
 import RecoveredView from "./Views/RecoveredView";
@@ -15,7 +15,7 @@ export {
   ContactForm,
   PostForm,
   CaseView,
-  ContactView,
+  ContactView, //Not Used or needed
   MessageCases,
   MessageContacts,
   RecoveredView,
