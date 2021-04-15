@@ -4,12 +4,12 @@ import Logo from "../Logo_V2.svg";
 export default function AppHeader(props) {
   return (
     <Grommet theme={props.theme}>
-      <Header background="brand">
+      <Header background="accent-1">
         <Button
           href="/"
           primary
           hoverIndicator={{
-            color: "neutral-1",
+            color: "accent-1",
           }}
           // style={{
           //   border: "hidden",

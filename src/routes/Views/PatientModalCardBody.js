@@ -4,8 +4,6 @@ import {
   CardFooter,
   Button,
   CardBody,
-  Box,
-  Avatar,
   Text,
   Grid,
 } from "grommet";

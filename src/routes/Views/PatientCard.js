@@ -12,17 +12,21 @@ import {
 // import LineItem from "./LineItem";
 
 export default function PatientCard(props) {
-  const { name, _id, dob } = props.data;
+  const { name, _id, doc, dot } = props.data;
+  var formatName =
+    name.split(" ").length > 1
+      ? name.split(" ")[name.split(" ").length - 1] + ", " + name.split(" ")[0]
+      : name;
   return (
     <Button
       onClick={() => props.openModal(props.data)}
       style={{ borderRadius: "12px" }}
     >
-      <Card background="light-1" height="200px">
+      <Card background="light-2" height="190px" elevation="xlarge">
         {name && _id ? (
-          <CardBody style={{ paddingTop: "6px" }} align="center">
-            <Box height="96px" width="96px">
-              <Avatar fill background="neutral-1">
+          <CardBody style={{ paddingTop: "15px" }} align="center">
+            <Box height="80px" width="80px">
+              <Avatar fill background={props.cardColor}>
                 <Text size="xlarge">
                   {name.split(" ").length > 1
                     ? name.split(" ")[0][0] + name.split(" ")[1][0]
@@ -40,9 +44,10 @@ export default function PatientCard(props) {
               }}
               textAlign="center"
             >
-              {name}
+              {formatName}
             </Text>
-            {dob ? <Text color="gray">{dob}</Text> : ""}
+            {doc ? <Text color="gray">{doc}</Text> : ""}
+            {dot ? <Text color="gray">{dot}</Text> : ""}
           </CardBody>
         ) : (
           <CardBody justify="center">
@@ -51,7 +56,7 @@ export default function PatientCard(props) {
             </Text>
           </CardBody>
         )}
-        <CardFooter background="brand" height="32px" justify="center">
+        <CardFooter background="accent-2" height="32px" justify="center">
           Details
         </CardFooter>
       </Card>
