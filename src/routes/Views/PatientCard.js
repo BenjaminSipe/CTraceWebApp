@@ -9,6 +9,7 @@ import {
   Text,
   Box,
 } from "grommet";
+
 // import LineItem from "./LineItem";
 
 export default function PatientCard(props) {
@@ -26,7 +27,7 @@ export default function PatientCard(props) {
         {name && _id ? (
           <CardBody style={{ paddingTop: "15px" }} align="center">
             <Box height="80px" width="80px">
-              <Avatar fill background={props.cardColor}>
+              <Avatar fill background={props.data.cardColor}>
                 <Text size="xlarge">
                   {name.split(" ").length > 1
                     ? name.split(" ")[0][0] + name.split(" ")[1][0]
@@ -46,8 +47,16 @@ export default function PatientCard(props) {
             >
               {formatName}
             </Text>
-            {doc ? <Text color="gray">{doc}</Text> : ""}
-            {dot ? <Text color="gray">{dot}</Text> : ""}
+            {doc ? (
+              <Text color="gray">{props.formatDate(new Date(doc))}</Text>
+            ) : (
+              ""
+            )}
+            {dot ? (
+              <Text color="gray">{props.formatDate(new Date(dot))}</Text>
+            ) : (
+              ""
+            )}
           </CardBody>
         ) : (
           <CardBody justify="center">

@@ -15,4 +15,10 @@ function getCases() {
     .get("http://localhost:3000/api/case/all")
     .then((res) => res.data);
 }
-export { getContactByName, getContacts, getCases };
+
+function getRecovered() {
+  return axios
+    .get("http://localhost:3000/api/case/recovered/all")
+    .then((res) => res.data);
+}
+export { getContactByName, getContacts, getCases, getRecovered };
