@@ -154,9 +154,13 @@ export default class CaseView extends Component {
             {/* THIS IS WHERE MY MODAL GOES */}
             <DataEntryModalCard
               callbacks={{
-                deleteContact: this.deleteContact,
-                getProp: this.getProp,
-                setProp: this.setProp,
+                deleteContact: () => {
+                  this.setState({ showEntryDataModal: false });
+                },
+              }}
+              updateScreen={() => {
+                this.loadData("Active Cases");
+                this.setState({ showEntryDataModal: false });
               }}
               patientData={this.state.modalData}
               close={() => this.setState({ showEntryDataModal: false })}

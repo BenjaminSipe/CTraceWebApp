@@ -1,7 +1,6 @@
-import { Card, CardBody, CardFooter, Button, Avatar, Text, Box } from "grommet";
+import { Card, Button, Text } from "grommet";
 
 import { GrAdd } from "react-icons/gr";
-// import LineItem from "./LineItem";
 
 export default function ExtraCard(props) {
   switch (props.data?.view) {

@@ -4,25 +4,24 @@ import {
   RadioButtonGroup,
   MaskedInput,
   Card,
-  CardHeader,
   Button,
   CardBody,
   Text,
   Box,
-  DataTable,
   CardFooter,
 } from "grommet";
 
 import { nameMask, dateMask, phoneOrEmailMask } from "../../scripts/InputMasks";
+import { postCaseMessage } from "../../scripts/API";
 import { GrClose, GrPrevious } from "react-icons/gr";
 import React from "react";
 
 export default function PatientModalCardBody(props) {
   const data = props.patientData;
   const [type, setType] = React.useState("unknown");
-  let [x, setX] = React.useState(true);
+  // let [x, setX] = React.useState(true);
   let [entryData, setEntryData] = React.useState({
-    formName: "",
+    name: "",
     dType: "",
     date: "",
     info: "",
@@ -40,11 +39,7 @@ export default function PatientModalCardBody(props) {
               borderRadius: "15px",
             }}
           >
-            <Box
-              style={{ borderRadius: "15px 0% 0% 15px" }}
-              width="200px"
-              background="light-3"
-            >
+            <Box flex background="rust">
               <Button
                 fill
                 onClick={() => {
@@ -52,13 +47,15 @@ export default function PatientModalCardBody(props) {
                   setType("PositiveTest");
                 }}
               >
-                Covid Test Returned Positive
+                <Box fill justify="center" style={{ padding: "10%" }}>
+                  <Text textAlign="center">Covid Test Returned Positive</Text>
+                </Box>
               </Button>
             </Box>
             <Box
               style={{ borderRadius: "0% 15px 15px 0%" }}
               background="light-4"
-              width="200px"
+              flex
             >
               <Button
                 fill
@@ -67,7 +64,11 @@ export default function PatientModalCardBody(props) {
                   setType("Symptomatic");
                 }}
               >
-                Exposed Patient Became Symptomatic
+                <Box fill justify="center" style={{ padding: "10%" }}>
+                  <Text textAlign="center">
+                    Exposed Patient Became Symptomatic
+                  </Text>
+                </Box>
               </Button>
             </Box>
           </Box>
@@ -80,7 +81,6 @@ export default function PatientModalCardBody(props) {
                 fill
                 rows={["flex", "flex", "flex"]}
                 columns={["flex", "xsmall"]}
-                // gap="small"
                 justify="start"
                 areas={[
                   { name: "first", start: [0, 0], end: [1, 0] },
@@ -100,11 +100,11 @@ export default function PatientModalCardBody(props) {
                     mask={nameMask()}
                     id={"textinput-contacts"}
                     placeholder="Full name"
-                    value={entryData.formName}
+                    value={entryData.name}
                     onChange={(event) => {
                       setEntryData({
                         ...entryData,
-                        formName: event.target.value,
+                        name: event.target.value,
                       });
                     }}
                   />
@@ -186,14 +186,20 @@ export default function PatientModalCardBody(props) {
                   setEntryData({
                     ...entryData,
                     info: "",
-                    formName: "",
+                    name: "",
                     date: "",
                   });
-
-                  console.log(props.callbacks.getProp("formName"));
                 }}
               ></Button>
-              <Button label="Submit" primary></Button>
+              <Button
+                label="Submit"
+                primary
+                onClick={() => {
+                  postCaseMessage(entryData).then((res) => {
+                    props.updateScreen();
+                  });
+                }}
+              ></Button>
             </CardFooter>
           </Box>
         );
