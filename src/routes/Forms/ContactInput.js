@@ -65,7 +65,7 @@ export default function ContactInput(props) {
           )}
           size="small"
           id={"textinput-contactinfo-" + index}
-          name="info"
+          name={"info-" + index}
           value={props.callbacks.getProp(index, "info")}
           placeholder={
             props.callbacks.getProp(index, "type") === "Phone"
@@ -93,13 +93,13 @@ export default function ContactInput(props) {
       />
       <FormField
         gridArea="third"
-        name="contactdoc"
+        name={"contactdoc-" + index}
         htmlFor={"textinput-contactdoc-" + index}
         label="Date of Contact"
       >
         <MaskedInput
           id={"textinput-contactdoc-" + index}
-          name="contactDoc"
+          name={"contactDoc-" + index}
           mask={dateMask(props.callbacks.getProp(index, "doc"))}
           value={props.callbacks.getProp(index, "doc")}
           onChange={(event) => {
