@@ -30,7 +30,7 @@ class CaseForm extends Component {
   setProp = (index, name, pvalue) => {
     const contacts = this.state.contacts;
     contacts[index][name] = pvalue;
-    this.setState(contacts);
+    this.setState({ contacts });
   };
   deleteContact = (index) => {
     // var value = { ...this.state.value };
