@@ -96,7 +96,9 @@ export default function PatientModalCardBody(props) {
               data={Object.entries(data)
                 .filter(
                   (item) =>
-                    !["_id", "name", "contacts", "cardColor"].includes(item[0])
+                    !["_id", "name", "contacts", "cardColor", "form"].includes(
+                      item[0]
+                    )
                 )
                 .map((item) => {
                   // This is a weird special case I never figured out why.
