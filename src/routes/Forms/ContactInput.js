@@ -11,7 +11,7 @@ import { GrClose } from "react-icons/gr";
 import React from "react";
 import { nameMask, dateMask, phoneOrEmailMask } from "../../scripts/InputMasks";
 export default function ContactInput(props) {
-  let [index] = React.useState(props.index || "");
+  let [index] = React.useState(props.index);
   let [x, setX] = React.useState(true);
 
   return (
