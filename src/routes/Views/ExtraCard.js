@@ -18,7 +18,7 @@ export default function ExtraCard(props) {
             elevation="xlarge"
           >
             <GrAdd size="40px" height="100%" />
-            Add Positive
+            Add Case
           </Card>
         </Button>
       );

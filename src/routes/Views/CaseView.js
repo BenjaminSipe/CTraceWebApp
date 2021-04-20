@@ -42,9 +42,7 @@ export default class CaseView extends Component {
     // this.getContacts();
   };
   formatDate(d) {
-    return (
-      "" + (d.getMonth() + 1) + "/" + (d.getDate() + 1) + "/" + d.getFullYear()
-    );
+    return "" + (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
   }
   getRandomColor() {
     let arr = ["color-1", "color-2", "color-3", "color-4", "control"];
