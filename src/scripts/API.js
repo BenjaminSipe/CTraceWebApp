@@ -42,12 +42,19 @@ function postCase(value) {
 function postCaseMessage(data) {
   return axios.post("/api/messaging/case", data).then((res) => res.data);
 }
+
+function postContactMessage(data) {
+  return axios
+    .post("/api/messaging/contact/" + data._id, data)
+    .then((res) => res.data);
+}
 export {
   getContactByName,
   getContacts,
   getCases,
   getRecovered,
   postCaseMessage,
+  postContactMessage,
   postCase,
   postContact,
 };

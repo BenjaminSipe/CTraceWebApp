@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Grid, Box, Button, Layer } from "grommet";
+import { Grid, Box, Button, Layer, Tabs, Tab } from "grommet";
 import PatientCard from "./PatientCard";
 import { getCases, getContacts, getRecovered } from "../../scripts/API";
 import PatientModalCardBody from "./PatientModalCardBody";
@@ -76,9 +76,9 @@ export default class CaseView extends Component {
           formatDate={this.formatDate}
           openModal={() => {
             this.setState({ showModal: false, showEntryDataModal: true });
-            this.setState({ modalData: { cardColor: "control" } });
+            this.setState({ modalData: { view: data, cardColor: "control" } });
           }}
-          data={{ view: this.state.view, cardColor: "control" }}
+          data={{ view: data, cardColor: "control" }}
           key="extraCard"
         ></ExtraCard>
       );
@@ -89,7 +89,8 @@ export default class CaseView extends Component {
   };
 
   componentDidMount() {
-    this.loadData(this.state.view);
+    this.state.possibleView.forEach((item) => this.loadData(item));
+    // this.loadData(this.state.view);
   }
 
   render() {
@@ -103,31 +104,29 @@ export default class CaseView extends Component {
           borderRadius: "10px",
         }}
       >
-        <Box direction="row" margin="10px">
+        <Tabs margin="10px">
           {this.state.possibleView.map((item) => (
-            <Button
+            <Tab
               key={item}
-              color="rust"
-              style={{
-                flexDirection: "row",
-                flex: 1,
-                borderRadius: 0,
-              }}
-              label={item}
+              title={item}
               onClick={() => {
+                console.log("test");
                 this.setState({ view: item });
                 this.loadData(item);
               }}
-            />
+            >
+              <Grid
+                rows={["190px"]}
+                columns="120px"
+                gap={{ row: "medium", column: "small" }}
+              >
+                {this.state[item]?.length > 0
+                  ? this.state[item]
+                  : "No " + item + " Currently."}
+              </Grid>
+            </Tab>
           ))}
-        </Box>
-        <Grid
-          rows={["190px"]}
-          columns="120px"
-          gap={{ row: "medium", column: "medium" }}
-        >
-          {this.state[this.state.view]}
-        </Grid>
+        </Tabs>
 
         {!this.state.showEntryDataModal && this.state.showModal && (
           <Layer
@@ -151,14 +150,20 @@ export default class CaseView extends Component {
           >
             {/* THIS IS WHERE MY MODAL GOES */}
             <DataEntryModalCard
+              // currentView={this.state.view}
               callbacks={{
-                deleteContact: () => {
+                closeModal: () => {
                   this.setState({ showEntryDataModal: false });
+                },
+                reopenModal: () => {
+                  this.setState({ showEntryDataModal: true });
                 },
               }}
               updateScreen={() => {
-                this.loadData("Active Cases");
-                this.setState({ showEntryDataModal: false });
+                this.setState({ "Active Cases": null });
+                this.loadData(this.state.view);
+
+                // this.setState({ showEntryDataModal: false });
               }}
               patientData={this.state.modalData}
               close={() => this.setState({ showEntryDataModal: false })}

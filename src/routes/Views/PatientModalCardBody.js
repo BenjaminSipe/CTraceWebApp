@@ -39,8 +39,8 @@ export default function PatientModalCardBody(props) {
       style={{
         minHeight: "300px",
         minWidth: "600px",
-        paddingRight: "10px",
-        borderRadius: "15px",
+        // paddingRight: "10px",
+        // borderRadius: "15px",
       }}
       background="light-1"
     >
