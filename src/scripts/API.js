@@ -17,6 +17,17 @@ function getRecovered() {
   return axios.get("/api/case/recovered/all").then((res) => res.data);
 }
 
+function postContact(value) {
+  return axios
+    .post("/api/contact", value)
+    .then((res) => {
+      console.log(res);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
 function postCase(value) {
   return axios
     .post("/api/case", value)
@@ -38,4 +49,5 @@ export {
   getRecovered,
   postCaseMessage,
   postCase,
+  postContact,
 };
