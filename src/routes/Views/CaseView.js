@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Grid, Box, Button, Layer, Tabs, Tab } from "grommet";
+import { Grid, Box, Layer, Tabs, Tab } from "grommet";
 import PatientCard from "./PatientCard";
 import { getCases, getContacts, getRecovered } from "../../scripts/API";
 import PatientModalCardBody from "./PatientModalCardBody";
@@ -35,11 +35,6 @@ export default class CaseView extends Component {
   };
   deleteContact = () => {
     this.setState({ showEntryDataModal: false });
-
-    // var value = { ...this.state.value };
-    // value.contacts.splice(index, 1);
-    // this.setState({ value });
-    // this.getContacts();
   };
   formatDate(d) {
     return "" + (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
@@ -56,41 +51,40 @@ export default class CaseView extends Component {
       Recovered: () => getRecovered(),
       Past: () => getRecovered(),
     };
-    if (!this.state[data]) {
-      var values = await (await functionArr[data]()).map((item) => {
-        let c = this.getRandomColor();
-        return (
-          <PatientCard
-            formatDate={this.formatDate}
-            openModal={() => {
-              this.setState({ showModal: true, showEntryDataModal: false });
-              this.setState({ modalData: { ...item, cardColor: c } });
-            }}
-            data={{ ...item, cardColor: c }}
-            key={item._id}
-          ></PatientCard>
-        );
-      });
-      values.unshift(
-        <ExtraCard
+    var values = await (await functionArr[data]()).map((item) => {
+      let c = this.getRandomColor();
+      return (
+        <PatientCard
           formatDate={this.formatDate}
           openModal={() => {
-            this.setState({ showModal: false, showEntryDataModal: true });
-            this.setState({ modalData: { view: data, cardColor: "control" } });
+            this.setState({ showModal: true, showEntryDataModal: false });
+            this.setState({ modalData: { ...item, cardColor: c } });
           }}
-          data={{ view: data, cardColor: "control" }}
-          key="extraCard"
-        ></ExtraCard>
+          data={{ ...item, cardColor: c }}
+          key={item._id}
+        ></PatientCard>
       );
-      let v = {};
-      v[data] = values;
-      this.setState(v);
-    }
+    });
+    values.unshift(
+      <ExtraCard
+        formatDate={this.formatDate}
+        openModal={() => {
+          this.setState({ showModal: false, showEntryDataModal: true });
+          this.setState({ modalData: { view: data, cardColor: "control" } });
+        }}
+        data={{ view: data, cardColor: "control" }}
+        key="extraCard"
+      ></ExtraCard>
+    );
+
+    let v = {};
+    v[data] = await values;
+    this.setState(v);
+    return new Promise(() => v);
   };
 
   componentDidMount() {
     this.state.possibleView.forEach((item) => this.loadData(item));
-    // this.loadData(this.state.view);
   }
 
   render() {
@@ -110,7 +104,6 @@ export default class CaseView extends Component {
               key={item}
               title={item}
               onClick={() => {
-                console.log("test");
                 this.setState({ view: item });
                 this.loadData(item);
               }}
@@ -134,7 +127,6 @@ export default class CaseView extends Component {
             onEsc={() => this.setState({ showModal: false })}
             onClickOutside={() => this.setState({ showModal: false })}
           >
-            {/* THIS IS WHERE MY MODAL GOES */}
             <PatientModalCardBody
               formatDate={this.formatDate}
               patientData={this.state.modalData}
@@ -148,9 +140,7 @@ export default class CaseView extends Component {
             onEsc={() => this.setState({ showEntryDataModal: false })}
             onClickOutside={() => this.setState({ showEntryDataModal: false })}
           >
-            {/* THIS IS WHERE MY MODAL GOES */}
             <DataEntryModalCard
-              // currentView={this.state.view}
               callbacks={{
                 closeModal: () => {
                   this.setState({ showEntryDataModal: false });
@@ -158,12 +148,10 @@ export default class CaseView extends Component {
                 reopenModal: () => {
                   this.setState({ showEntryDataModal: true });
                 },
-              }}
-              updateScreen={() => {
-                this.setState({ "Active Cases": null });
-                this.loadData(this.state.view);
-
-                // this.setState({ showEntryDataModal: false });
+                updateScreen: (item) => {
+                  this.loadData("Exposed");
+                  this.loadData("Active Cases");
+                },
               }}
               patientData={this.state.modalData}
               close={() => this.setState({ showEntryDataModal: false })}

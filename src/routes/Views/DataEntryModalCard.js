@@ -195,6 +195,7 @@ export default function PatientModalCardBody(props) {
                   } else {
                     return postCaseMessage(entryData)
                       .then((res) => {
+                        console.log("test3");
                         // props.updateScreen();
                         return res;
                       })
@@ -205,8 +206,9 @@ export default function PatientModalCardBody(props) {
                 },
               }).then((result) => {
                 if (result.isConfirmed) {
+                  console.log("test2");
+                  props.callbacks.updateScreen(props.patientData.view);
                   Swal.fire("Message Sent Successfully", "", "success");
-                  props.updateScreen();
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                   props.callbacks.reopenModal();
                 }
