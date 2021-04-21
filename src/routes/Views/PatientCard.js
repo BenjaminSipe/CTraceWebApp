@@ -116,7 +116,6 @@ export default function PatientCard(props) {
           {name && _id ? (
             <CardBody style={{ paddingTop: "15px" }} align="center">
               <Badge
-                size="large"
                 overlap="circle"
                 badgeContent={
                   <Tip
@@ -133,7 +132,7 @@ export default function PatientCard(props) {
                         {errorType()[1]}
                       </Box>
                     }
-                    dropProps={{ align: { left: "right" } }}
+                    dropProps={{ align: { right: "left", bottom: "top" } }}
                   >
                     &nbsp;!&nbsp;
                   </Tip>
