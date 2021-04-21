@@ -19,6 +19,8 @@ import {
   emailMask,
 } from "../../scripts/InputMasks";
 
+import { postContact } from "../../scripts/API";
+
 class ContactForm extends Component {
   constructor(props) {
     super(props);
@@ -55,17 +57,9 @@ class ContactForm extends Component {
               this.setState({ value: {} });
             }}
             onSubmit={({ value }) => {
-              axios
-                .post("http://localhost:3000/api/contact", value)
-                .then(function (response) {
-                  console.log(response);
-                })
-                .catch(function (error) {
-                  console.log(error);
-                })
-                .then(() => {
-                  this.setState({ redirect: true });
-                });
+              postContact(value).then(() => {
+                this.setState({ redirect: true });
+              });
             }}
           >
             <FormField name="name" htmlFor="textinput-name" label="Full Name">
