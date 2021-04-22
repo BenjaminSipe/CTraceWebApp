@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "172.25.22.175";
+// const url = "172.25.22.175";
 function getContactByName(name) {
   return axios.get("/api/contact/by/name/" + name);
 }
@@ -16,10 +16,13 @@ function getCases() {
 function getRecovered() {
   return axios.get("/api/case/recovered/all").then((res) => res.data);
 }
-
+function getPast() {
+  return axios.get("/api/contact/past/all").then((res) => res.data);
+}
 function postContact(value) {
+  var { id, ...rest } = value;
   return axios
-    .post("/api/contact", value)
+    .post("/api/contact/" + id, rest)
     .then((res) => {
       console.log(res);
     })
@@ -29,8 +32,9 @@ function postContact(value) {
 }
 
 function postCase(value) {
+  var { id, ...rest } = value;
   return axios
-    .post("/api/case", value)
+    .post("/api/case/" + id, rest)
     .then(function (response) {
       console.log(response);
     })
@@ -48,13 +52,28 @@ function postContactMessage(data) {
     .post("/api/messaging/contact/" + data._id, data)
     .then((res) => res.data);
 }
+
+function deleteContact(id) {
+  return axios.delete("/api/contact/" + id).then((res) => res.data);
+}
+function deleteCase(id) {
+  return axios.delete("/api/case/" + id).then((res) => res.data);
+}
+
+function releasePatient(id) {
+  return axios.put("/api/messaging/release/" + id).then((res) => res.data);
+}
 export {
   getContactByName,
   getContacts,
   getCases,
   getRecovered,
+  getPast,
+  deleteContact,
+  deleteCase,
   postCaseMessage,
   postContactMessage,
   postCase,
   postContact,
+  releasePatient,
 };
