@@ -32,9 +32,13 @@ const customTheme = {
       "neutral-2": "#9fb8ad",
 
       "light-1": "#fff",
+      "light-1.5": "#f8f8f8",
       "light-2": "#eee",
+      "light-2.5": "#e8e8e8",
       "light-3": "#ddd",
+      "light-3.5": "#d8d8d8",
       "light-4": "#ccc",
+      "light-4.5": "#c8c8c8",
       rust: "#A24B11",
       "color-1": "#132859",
       "color-2": "#A67502",

@@ -1,4 +1,5 @@
-import "../../App.css";
+// import "../../App.css";
+import Logo from "../../Logo_V2.svg";
 import React, { Component } from "react";
 import { GrAdd } from "react-icons/gr";
 import {
@@ -10,6 +11,9 @@ import {
   Box,
   Button,
   Heading,
+  CardFooter,
+  Image,
+  Paragraph,
 } from "grommet";
 import { Redirect } from "react-router-dom";
 import { postCase } from "../../scripts/API";
@@ -51,21 +55,20 @@ class CaseForm extends Component {
             }}
             index={index}
           />
-          {index !== this.state.contacts.length - 1 ? (
-            <Box background="gray" width="100%" height="1px"></Box>
-          ) : (
-            ""
-          )}
         </Box>
       );
     });
 
     contactInputs.push(
       <Button
+        primary
+        color="light-4"
+        hoverIndicator
         alignSelf="center"
         key="addContact"
-        icon={<GrAdd />}
-        label="Add People you have been exposed to."
+        // style=
+        icon={<GrAdd style={{ fontSize: "50px" }} />}
+        label="Identify people you have had close contact recently."
         onClick={() => {
           this.state.contacts.push({
             name: "",
@@ -122,8 +125,23 @@ class CaseForm extends Component {
     }
     return (
       <div>
-        <Heading alignSelf="start">C-Trace</Heading>
-        <h2>COVID19 Positive Form</h2>
+        <Box background="control" fill>
+          <Image
+            fit="contain"
+            src={Logo}
+            style={{ padding: "15px", width: "160px" }}
+          ></Image>
+        </Box>
+        <Box background="light-3">
+          <Heading style={{ margin: 0, padding: "10px" }} level={2}>
+            Covid Positive Information Form
+          </Heading>
+          <Paragraph style={{ margin: 0, padding: "10px", paddingTop: 0 }}>
+            This form has been custom designed by C-Trace to be used for contact
+            tracing purposes only. Please fill out the below information
+            promptly and honestly.
+          </Paragraph>
+        </Box>
         <Form
           onReset={() => {
             this.setState({
@@ -202,7 +220,8 @@ class CaseForm extends Component {
               }}
             />
           </FormField>
-          <FormField //email
+          <FormField
+            background="light-1.5" //email
             name="email"
             htmlFor="textinput-email"
             label="Email"
@@ -237,7 +256,8 @@ class CaseForm extends Component {
               }}
             />
           </FormField>
-          <FormField //address
+          <FormField
+            background="light-1.5" //address
             required
             name="address"
             htmlFor="textinput-address"
@@ -269,7 +289,8 @@ class CaseForm extends Component {
               }}
             />
           </FormField>
-          <FormField //dob
+          <FormField
+            background="light-1.5" //dob
             name="dob"
             htmlFor="textinput-dob"
             label="Date of Birth"
@@ -302,7 +323,8 @@ class CaseForm extends Component {
               }}
             />
           </FormField>
-          <FormField //doso
+          <FormField
+            background="light-1.5" //doso
             name="doso"
             htmlFor="textinput-doso"
             label="Date of Symptom Onset."
@@ -325,6 +347,7 @@ class CaseForm extends Component {
               label="Symptoms"
             >
               <CheckBoxGroup
+                marginBottom="5px"
                 id="symptoms-input"
                 name="contacts"
                 value={this.state.symptoms}
@@ -336,6 +359,8 @@ class CaseForm extends Component {
 
               <Box direction="row">
                 <Button
+                  // plain
+                  style={{ padding: 0, marginRight: "15px", marginTop: "5px" }}
                   onClick={() => {
                     if (this.state.addSymptom !== "") {
                       this.state.symptoms.push(this.state.addSymptom);
@@ -349,17 +374,20 @@ class CaseForm extends Component {
                       this.setState({ addSymptom: "" });
                     }
                   }}
+                  icon={<GrAdd style={{ fontSize: "24px" }} />}
                 >
-                  <Box
+                  {/* <Box
                     justify="center"
                     align="center"
-                    width="xxsmall"
-                    height="xxsmall"
-                  >
-                    <GrAdd />
-                  </Box>
+                    // width="xxsmall"
+                    // height="xxsmall"
+                  > */}
+
+                  {/* </Box> */}
                 </Button>
                 <TextInput
+                  plain
+                  border="none"
                   value={this.state.addSymptom}
                   placeholder="other"
                   onChange={(event) =>
@@ -372,19 +400,36 @@ class CaseForm extends Component {
             </FormField>
           )}
           <Box
-            background="light-1"
+            background="light-1.5"
             style={{
               alignSelf: "end",
-              padding: "15px",
-              borderRadius: "10px",
+              padding: "3px",
+              // borderRadius: "px",
             }}
           >
+            {this.state.contacts?.length == 0 && (
+              <Paragraph style={{ margin: 0, padding: "10px", paddingTop: 0 }}>
+                Recent close contact is defined as any extended interaction 6
+                feet apart or less which lasts for 15 minutes or more. Mask
+                wearing is not taken into consideration at this time.
+              </Paragraph>
+            )}
             {this.state.contactInputs}
           </Box>
-          <Box direction="row" gap="medium">
-            <Button type="submit" primary label="Submit" />
+          <CardFooter
+            direction="row"
+            align="start"
+            style={{
+              minHeight: "100px",
+              paddingLeft: "10px",
+              paddingRight: "10px",
+              paddingBottom: "5px",
+            }}
+            gap="large"
+          >
             <Button type="reset" label="Reset" />
-          </Box>
+            <Button type="submit" primary label="Submit" />
+          </CardFooter>
         </Form>
       </div>
     );

@@ -1,4 +1,5 @@
-import "../../App.css";
+// import "../../App.css";
+import Logo from "../../Logo_V2.svg";
 import React, { Component } from "react";
 import {
   MaskedInput,
@@ -8,6 +9,9 @@ import {
   Box,
   Button,
   Heading,
+  CardFooter,
+  Image,
+  Paragraph,
 } from "grommet";
 import { Redirect } from "react-router-dom";
 import {
@@ -45,8 +49,23 @@ class ContactForm extends Component {
     } else {
       return (
         <div>
-          <Heading alignSelf="start">C-Trace</Heading>
-          <h2>Close Contact Form</h2>
+          <Box background="control" fill>
+            <Image
+              fit="contain"
+              src={Logo}
+              style={{ padding: "15px", width: "160px" }}
+            ></Image>
+          </Box>
+          <Box background="light-3">
+            <Heading style={{ margin: 0, padding: "10px" }} level={2}>
+              Close Contact Form
+            </Heading>
+            <Paragraph style={{ margin: 0, padding: "10px", paddingTop: 0 }}>
+              This form has been custom designed by C-Trace to be used for
+              contact tracing purposes only. Please fill out the below
+              information promptly and honestly.
+            </Paragraph>
+          </Box>
           <Form
             value={value}
             onChange={(nextValue) => {
@@ -71,11 +90,13 @@ class ContactForm extends Component {
               />
             </FormField>
             <FormField
+              background="light-1.5"
               name="address"
               htmlFor="textinput-address1"
               label="Address"
             >
               <TextInput
+                size="small"
                 required
                 id="textinput-address1"
                 name="address"
@@ -94,7 +115,12 @@ class ContactForm extends Component {
                 placeholder="Campus or Home"
               />
             </FormField>
-            <FormField name="email" htmlFor="textinput-email" label="email">
+            <FormField
+              name="email"
+              htmlFor="textinput-email"
+              label="email"
+              background="light-1.5"
+            >
               <MaskedInput
                 required
                 id="textinput-email"
@@ -115,6 +141,7 @@ class ContactForm extends Component {
               />
             </FormField>
             <FormField
+              background="light-1.5"
               name="doc"
               htmlFor="textinput-doc"
               label="Date of Close Contact"
@@ -140,10 +167,20 @@ class ContactForm extends Component {
                 value={value.phone}
               />
             </FormField>
-            <Box direction="row" gap="medium">
-              <Button type="submit" primary label="Submit" />
+            <CardFooter
+              direction="row"
+              align="start"
+              style={{
+                minHeight: "100px",
+                paddingLeft: "10px",
+                paddingRight: "10px",
+                paddingBottom: "5px",
+              }}
+              gap="large"
+            >
               <Button type="reset" label="Reset" />
-            </Box>
+              <Button type="submit" primary label="Submit" />
+            </CardFooter>
           </Form>
         </div>
       );
