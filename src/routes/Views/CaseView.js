@@ -1,7 +1,12 @@
 import React, { Component } from "react";
 import { Grid, Box, Layer, Tabs, Tab } from "grommet";
 import PatientCard from "./PatientCard";
-import { getCases, getContacts, getRecovered } from "../../scripts/API";
+import {
+  getCases,
+  getContacts,
+  getRecovered,
+  getPast,
+} from "../../scripts/API";
 import PatientModalCardBody from "./PatientModalCardBody";
 import DataEntryModalCard from "./DataEntryModalCard";
 import ExtraCard from "./ExtraCard";
@@ -10,8 +15,10 @@ export default class CaseView extends Component {
   state = {
     view: "Active Cases",
     "Active Cases": null,
+
     Exposed: null,
     Recovered: null,
+    Past: null,
     modalData: {},
     addEntryData: {
       formName: "",
@@ -39,9 +46,10 @@ export default class CaseView extends Component {
   formatDate(d) {
     return "" + (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
   }
-  getRandomColor() {
+  getRandomColor(_id) {
     let arr = ["color-1", "color-2", "color-3", "color-4", "control"];
-    return arr[Math.floor(Math.random() * arr.length)];
+    return arr[parseInt("0x" + _id) % arr.length]; // adjusted to work of id for consistent coloring.
+    // return arr[Math.floor(Math.random() * arr.length)];
   }
 
   loadData = async (data) => {
@@ -49,16 +57,16 @@ export default class CaseView extends Component {
       "Active Cases": () => getCases(),
       Exposed: () => getContacts(),
       Recovered: () => getRecovered(),
-      Past: () => getRecovered(),
+      Past: () => getPast(),
     };
     var values = await (await functionArr[data]()).map((item) => {
-      let c = this.getRandomColor();
+      let c = this.getRandomColor(item._id);
       return (
         <PatientCard
           formatDate={this.formatDate}
           openModal={() => {
             this.setState({ showModal: true, showEntryDataModal: false });
-            this.setState({ modalData: { ...item, cardColor: c } });
+            this.setState({ modalData: { ...item, view: data, cardColor: c } });
           }}
           data={{ ...item, cardColor: c }}
           key={item._id}
@@ -128,6 +136,13 @@ export default class CaseView extends Component {
             onClickOutside={() => this.setState({ showModal: false })}
           >
             <PatientModalCardBody
+              reopenModal={() => {
+                this.setState({ showModal: true });
+              }}
+              updateScreen={(item) => {
+                this.loadData("Exposed");
+                this.loadData("Active Cases");
+              }}
               formatDate={this.formatDate}
               patientData={this.state.modalData}
               close={() => this.setState({ showModal: false })}
@@ -148,7 +163,9 @@ export default class CaseView extends Component {
                 reopenModal: () => {
                   this.setState({ showEntryDataModal: true });
                 },
-                updateScreen: (item) => {
+                updateScreen: () => {
+                  this.loadData("Past");
+                  this.loadData("Recovered");
                   this.loadData("Exposed");
                   this.loadData("Active Cases");
                 },
