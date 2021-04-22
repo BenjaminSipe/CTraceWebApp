@@ -9,8 +9,12 @@ import {
   CardFooter,
 } from "grommet";
 import { GrClose } from "react-icons/gr";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { deleteContact, deleteCase, releasePatient } from "../../scripts/API";
 
 export default function PatientModalCardBody(props) {
+  const MySwal = withReactContent(Swal);
   const data = props.patientData;
   const formats = (item) => {
     let formatter = {
@@ -100,9 +104,14 @@ export default function PatientModalCardBody(props) {
               data={Object.entries(data)
                 .filter(
                   (item) =>
-                    !["_id", "name", "contacts", "cardColor", "form"].includes(
-                      item[0]
-                    )
+                    ![
+                      "_id",
+                      "name",
+                      "contacts",
+                      "cardColor",
+                      "form",
+                      "view",
+                    ].includes(item[0])
                 )
                 .map((item) => {
                   // This is a weird special case I never figured out why.
@@ -114,8 +123,126 @@ export default function PatientModalCardBody(props) {
                 })}
             />
           </CardBody>
-          <CardFooter justify="end">
-            This is where buttons for messaging goes.
+          <CardFooter
+            style={{
+              paddingLeft: "35px",
+              paddingRight: "35px",
+              paddingBottom: "5px",
+            }}
+          >
+            <Button
+              primary
+              color="rust"
+              label="delete"
+              onClick={() => {
+                props.close();
+                MySwal.fire({
+                  title: "Delete Patient Info?",
+                  showCancelButton: true,
+                  confirmButtonText: `Yes`,
+                  showLoaderOnConfirm: true,
+                  cancelButtonText: `No`,
+                  allowOutsideClick: () => !Swal.isLoading(),
+                  preConfirm: () => {
+                    return (data.view === "Exposed"
+                      ? deleteContact(data._id)
+                      : deleteCase(data._id)
+                    )
+                      .then((res) => {
+                        if (res.message) {
+                          Swal.fire(
+                            "Deleted patient data!",
+                            "",
+                            "success"
+                          ).then(() => {
+                            props.updateScreen(data.view);
+                          });
+                        } else if (res.err) {
+                          Swal.fire(
+                            "Patient data was already deleted.",
+                            "We've removed it from this list in the mean time.",
+                            "info"
+                          ).then(() => {
+                            props.updateScreen(data.view);
+                          });
+                        } else {
+                          console.log(res);
+                          Swal.fire(
+                            "Patient not found",
+                            "Could not find patient with given id.",
+                            "error"
+                          );
+                        }
+                      })
+                      .catch(() => {
+                        Swal.fire(
+                          "Something went wrong! Please try again.",
+                          "",
+                          "error"
+                        );
+                      });
+                  },
+                });
+              }}
+            />
+            <Button
+              secondary
+              label="message"
+              onClick={() =>
+                Swal.fire(
+                  "Custom Messages not implemented yet.",
+                  "Our apologies for the inconvenience.",
+                  "error"
+                )
+              }
+            />
+            <Button
+              primary
+              label="release"
+              onClick={() => {
+                props.close();
+                MySwal.fire({
+                  title: "Release Patient from Quarantine?",
+                  showCancelButton: true,
+                  confirmButtonText: `Yes`,
+                  showLoaderOnConfirm: true,
+                  cancelButtonText: `No`,
+                  allowOutsideClick: () => !Swal.isLoading(),
+                  preConfirm: () => {
+                    return releasePatient(data._id)
+                      .then((res) => {
+                        if (res.message) {
+                          Swal.fire(
+                            "Patient has been notified",
+                            "",
+                            "success"
+                          ).then(() => {
+                            props.updateScreen(data.view);
+                          });
+                        } else if (res.err) {
+                          Swal.fire(res.err, "", "info").then(() => {
+                            props.updateScreen(data.view);
+                          });
+                        } else {
+                          console.log(res);
+                          Swal.fire(
+                            "Patient not found",
+                            "Could not find patient with given id.",
+                            "error"
+                          );
+                        }
+                      })
+                      .catch(() => {
+                        Swal.fire(
+                          "Connection error!",
+                          "Please make sure you are connected to the internet.",
+                          "error"
+                        );
+                      });
+                  },
+                });
+              }}
+            />
           </CardFooter>
         </Box>
       </Box>
