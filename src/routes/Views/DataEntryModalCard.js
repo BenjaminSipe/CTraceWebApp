@@ -10,15 +10,13 @@ import {
   CardFooter,
 } from "grommet";
 import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
 
 import { nameMask, dateMask, phoneOrEmailMask } from "../../scripts/InputMasks";
 import { postCaseMessage, postContactMessage } from "../../scripts/API";
-import { GrClose, GrPrevious } from "react-icons/gr";
+import { GrClose } from "react-icons/gr";
 import React from "react";
 
 export default function PatientModalCardBody(props) {
-  const MySwal = withReactContent(Swal);
   const data = props.patientData;
   const [type, setType] = React.useState("Symptomatic");
   // let [x, setX] = React.useState(true);
@@ -159,7 +157,13 @@ export default function PatientModalCardBody(props) {
             </FormField>
           </Grid>
         </CardBody>
-        <CardFooter style={{ paddingLeft: "5px", paddingBottom: "5px" }}>
+        <CardFooter
+          style={{
+            paddingLeft: "35px",
+            paddingRight: "35px",
+            paddingBottom: "5px",
+          }}
+        >
           <Button
             label="Cancel"
             secondary
@@ -174,7 +178,6 @@ export default function PatientModalCardBody(props) {
               props.callbacks.closeModal();
               Swal.fire({
                 title: "Save info and send message to patient?",
-                // showDenyButton: () => !Swal.isLoading(),
                 showCancelButton: true,
                 confirmButtonText: `Yes, I'm ready`,
                 showLoaderOnConfirm: true,
@@ -186,7 +189,6 @@ export default function PatientModalCardBody(props) {
                     entryData._id = "override";
                     return postContactMessage(entryData)
                       .then((res) => {
-                        // props.updateScreen();
                         return res;
                       })
                       .catch((res) => {
@@ -195,7 +197,6 @@ export default function PatientModalCardBody(props) {
                   } else {
                     return postCaseMessage(entryData)
                       .then((res) => {
-                        console.log("test3");
                         // props.updateScreen();
                         return res;
                       })
@@ -206,7 +207,6 @@ export default function PatientModalCardBody(props) {
                 },
               }).then((result) => {
                 if (result.isConfirmed) {
-                  console.log("test2");
                   props.callbacks.updateScreen(props.patientData.view);
                   Swal.fire("Message Sent Successfully", "", "success");
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
