@@ -8,18 +8,12 @@ import {
   // Paragraph,
   Text,
   Box,
-  Layer,
   Tip,
 } from "grommet";
-import {
-  makeStyles,
-  ThemeProvider,
-  createMuiTheme,
-} from "@material-ui/core/styles";
+import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
 import Badge from "@material-ui/core/Badge";
 
-// import LineItem from "./LineItem";
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -31,15 +25,13 @@ const theme = createMuiTheme({
     error: {
       main: "#cc0000",
     },
-    default: {
-      main: "#00008b",
-    },
   },
 });
 export default function PatientCard(props) {
   // const classes = useStyles();
   const { name, _id, doc, dot, status, doso, address, form } = props.data;
   const errorType = () => {
+    if (status === "Recovered" || status === "Past") return [];
     if (form) {
       return ["error", "Form not sent!"];
     }
@@ -57,6 +49,8 @@ export default function PatientCard(props) {
           } else {
             x = new Date(dot);
           }
+          break;
+        default:
           break;
       }
       x.setDate(x.getDate() + 14);
@@ -80,13 +74,14 @@ export default function PatientCard(props) {
     }
   };
   const hasError = () => {
+    if (status === "Past" || status === "Recoverd") return false;
     var now = new Date();
     now.setDate(now.getDate() - 12);
     if (address && !form) {
       if (status === "Exposed") {
         return now.getTime() > new Date(doc).getTime();
       } else {
-        if (status == "Positive") {
+        if (status === "Positive") {
           if (dot) {
             return now.getTime() > new Date(dot).getTime();
           } else {
@@ -124,7 +119,7 @@ export default function PatientCard(props) {
                       <Box
                         pad="small"
                         gap="small"
-                        width={{ max: "small" }}
+                        // width={{ max: "small" }}
                         round="small"
                         background="background-front"
                         responsive={false}
