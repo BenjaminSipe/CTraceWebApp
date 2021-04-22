@@ -103,15 +103,16 @@ class CaseForm extends Component {
         "Nausea or vomiting",
         "Diarrhea",
       ],
-      name: props.query.get("name") || "",
-      address: props.query.get("address") || "",
-      email: props.query.get("email") || "",
-      dob: props.query.get("dob") || "",
-      phone: props.query.get("phone") || "",
+      id: props.query.get("id"),
+      name: "",
+      address: "",
+      email: "",
+      dob: "",
+      phone: "",
       quarantineLocation: "",
       contacts: [],
-      dot: props.query.get("dot") || "",
-      doso: props.query.get("doso") || "",
+      dot: "",
+      doso: "",
       symptoms: [],
     };
   }
@@ -154,6 +155,7 @@ class CaseForm extends Component {
           }}
           onSubmit={() => {
             const {
+              id,
               name,
               address,
               email,
@@ -166,6 +168,7 @@ class CaseForm extends Component {
               symptoms,
             } = this.state;
             postCase({
+              id,
               name,
               address,
               email,
