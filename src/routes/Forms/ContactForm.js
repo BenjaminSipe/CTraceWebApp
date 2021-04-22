@@ -1,4 +1,3 @@
-// import logo from './logo.svg';
 import "../../App.css";
 import React, { Component } from "react";
 import {
@@ -11,7 +10,6 @@ import {
   Heading,
 } from "grommet";
 import { Redirect } from "react-router-dom";
-import axios from "axios";
 import {
   dateMask,
   phoneNumberMask,
@@ -27,6 +25,7 @@ class ContactForm extends Component {
     this.state = {
       redirect: false,
       value: {
+        id: props.query.get("id") || "",
         name: props.query.get("name") || "",
         address: props.query.get("address") || "",
         email: props.query.get("email") || "",
