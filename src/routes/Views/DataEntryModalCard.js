@@ -184,7 +184,7 @@ export default function PatientModalCardBody(props) {
 
                 cancelButtonText: `No, Not yet`,
                 allowOutsideClick: () => !Swal.isLoading(),
-                preConfirm: (login) => {
+                preConfirm: () => {
                   if (props.patientData.view === "Exposed") {
                     entryData._id = "override";
                     return postContactMessage(entryData)

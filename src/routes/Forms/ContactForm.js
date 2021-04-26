@@ -24,20 +24,69 @@ import {
 import { postContact } from "../../scripts/API";
 
 class ContactForm extends Component {
+  colors(value) {
+    return [
+      "name",
+      "email",
+      "phone",
+      "address",
+      "quarantineLocation",
+      "dob",
+      "doc",
+    ]
+      .filter((item) => this.decoder(item))
+      .indexOf(value) %
+      2 ===
+      1
+      ? "light-1.5"
+      : "light-1";
+  }
+
+  decoder(value) {
+    // console.log(value);
+    if (value == "doc") return false;
+    if (this.state.code) {
+      switch (value) {
+        case "email":
+          // console.log(value + (this.state.code % 2));
+          return this.state.code % 2 < 1;
+        case "phone":
+          // console.log(value + (Math.floor(this.state.code / 2) % 2));
+          return this.state.code % 4 < 2;
+        case "address":
+          // console.log(value + (Math.floor(this.state.code / 4) % 2));
+          return this.state.code % 8 < 4;
+        case "dob":
+          // console.log(value + (Math.floor(this.state.code / 8) % 2));
+          return this.state.code < 8;
+        default:
+          return true;
+      }
+    } else {
+      return true;
+    }
+  }
   constructor(props) {
     super(props);
     this.state = {
       redirect: false,
       value: {
         id: props.query.get("id") || "",
-        name: props.query.get("name") || "",
-        address: props.query.get("address") || "",
-        email: props.query.get("email") || "",
-        dob: props.query.get("dob") || "",
-        doc: props.query.get("doc") || "",
-        phone: props.query.get("phone") || "",
+        name: "",
+        address: {
+          street1: "",
+          street2: "",
+          city: "",
+          state: "",
+          zip: "",
+        },
+        email: "",
+        dob: "",
+        doc: "",
+        phone: "",
         quarantineLocation: "",
       },
+      code: props.query.get("code") || "",
     };
   }
   // this also works with react-router-native
@@ -56,14 +105,15 @@ class ContactForm extends Component {
               style={{ padding: "15px", width: "160px" }}
             ></Image>
           </Box>
-          <Box background="light-3">
+          <Box color="light-3">
             <Heading style={{ margin: 0, padding: "10px" }} level={2}>
               Close Contact Form
             </Heading>
             <Paragraph style={{ margin: 0, padding: "10px", paddingTop: 0 }}>
               This form has been custom designed by C-Trace to be used for
-              contact tracing purposes only. Please fill out the below
-              information promptly and honestly.
+              contact tracing purposes only. Required fields are marked with an
+              asterisk*. Please fill out the below information promptly and
+              honestly.
             </Paragraph>
           </Box>
           <Form
@@ -75,98 +125,235 @@ class ContactForm extends Component {
               this.setState({ value: {} });
             }}
             onSubmit={({ value }) => {
-              postContact(value).then(() => {
+              const {
+                id,
+                name,
+                address,
+                email,
+                dob,
+                phone,
+                quarantineLocation,
+              } = this.state.value;
+              var query = {
+                id,
+                name,
+                dob,
+                quarantineLocation,
+                ...(email !== "" && { email: email }),
+                ...(address.street1 !== "" && { address: address }),
+                ...(phone !== "" && { phone: phone }),
+              };
+
+              postContact(query).then(() => {
                 this.setState({ redirect: true });
               });
             }}
           >
-            <FormField name="name" htmlFor="textinput-name" label="Full Name">
-              <MaskedInput
-                required
-                id="textinput-name"
+            {this.decoder("name") && (
+              <FormField
                 name="name"
-                mask={nameMask()}
-                value={value.name}
-              />
-            </FormField>
-            <FormField
-              background="light-1.5"
-              name="address"
-              htmlFor="textinput-address1"
-              label="Address"
-            >
-              <TextInput
-                size="small"
-                required
-                id="textinput-address1"
+                htmlFor="textinput-name"
+                label="Full Name*"
+                background={this.colors("name")}
+              >
+                <MaskedInput
+                  required={this.decoder("name")}
+                  id="textinput-name"
+                  name="name"
+                  mask={nameMask()}
+                  value={value.name}
+                />
+              </FormField>
+            )}
+            {this.decoder("email") && (
+              <FormField //email
+                name="email"
+                htmlFor="textinput-email"
+                label="email"
+                background={this.colors("email")}
+              >
+                <MaskedInput
+                  // required={this.decoder("email")}
+                  id="textinput-email"
+                  name="email"
+                  placeholder="example@email.com"
+                  mask={emailMask()}
+                  value={value.email}
+                />
+              </FormField>
+            )}
+            {this.decoder("phone") && (
+              <FormField //phone
+                name="phone"
+                htmlFor="textinput-phone"
+                label="Phone Number"
+                background={this.colors("phone")}
+              >
+                <MaskedInput
+                  // required={this.decoder("phone")}
+                  id="textinput-phone"
+                  name="phone"
+                  mask={phoneNumberMask()}
+                  value={value.phone}
+                />
+              </FormField>
+            )}
+            {this.decoder("address") && (
+              <FormField
+                background={this.colors("address")}
+                // background="light-1.5" //address
+                // required
+                name="address"
+                // htmlFor="textinput-address"
+                label="Address"
+              >
+                <TextInput
+                  required
+                  id="textinput-address-street1"
+                  name="address-street1"
+                  placeholder="Street Address*"
+                  value={value.address.street1}
+                  onChange={(event) =>
+                    this.setState({
+                      value: {
+                        ...value,
+                        address: {
+                          ...value.address,
+                          street1: event.target.value,
+                        },
+                      },
+                    })
+                  }
+                />
+                <TextInput
+                  id="textinput-address-street2"
+                  name="address-street2"
+                  placeholder="Apt. Number "
+                  value={value.address.street2}
+                  onChange={(event) =>
+                    this.setState({
+                      value: {
+                        ...value,
+                        address: {
+                          ...value.address,
+                          street2: event.target.value,
+                        },
+                      },
+                    })
+                  }
+                />
+                <TextInput
+                  required
+                  id="textinput-address-city"
+                  name="address-city"
+                  placeholder="City*"
+                  value={value.address.city}
+                  onChange={(event) =>
+                    this.setState({
+                      value: {
+                        ...value,
+                        address: {
+                          ...value.address,
+                          city: event.target.value,
+                        },
+                      },
+                    })
+                  }
+                />
+                <TextInput
+                  required
+                  id="textinput-address-state"
+                  name="address-state"
+                  placeholder="State*"
+                  value={value.address.state}
+                  onChange={(event) =>
+                    this.setState({
+                      value: {
+                        ...value,
+                        address: {
+                          ...value.address,
+                          state: event.target.value,
+                        },
+                      },
+                    })
+                  }
+                />
+                <TextInput
+                  required
+                  id="textinput-address-zip"
+                  name="address-zip"
+                  placeholder="Zip*"
+                  value={value.address.zip}
+                  onChange={(event) =>
+                    this.setState({
+                      value: {
+                        ...value,
+                        address: {
+                          ...value.address,
+                          zip: event.target.value,
+                        },
+                      },
+                    })
+                  }
+                />
+                {/* <TextInput
+                id="textinput-address"
                 name="address"
                 placeholder="1 MyStreet Road, MyTown MO 00000"
-              />
-            </FormField>
-            <FormField
-              name="quarantineLocation"
-              htmlFor="textinput-address2"
-              label="quarantineLocation"
-            >
-              <TextInput
-                required
-                id="textinput-address2"
+                value={this.state.address}
+                onChange={(event) => {
+                  this.setState({ address: event.target.value });
+                }}
+              /> */}
+              </FormField>
+            )}
+            {this.decoder("quarantineLocation") && (
+              <FormField //location
                 name="quarantineLocation"
-                placeholder="Campus or Home"
-              />
-            </FormField>
-            <FormField
-              name="email"
-              htmlFor="textinput-email"
-              label="email"
-              background="light-1.5"
-            >
-              <MaskedInput
-                required
-                id="textinput-email"
-                name="email"
-                placeholder="example@email.com"
-                mask={emailMask()}
-                value={value.email}
-              />
-            </FormField>
-            <FormField name="dob" htmlFor="textinput-dob" label="Date of Birth">
-              <MaskedInput
-                required
-                id="textinput-dob"
+                htmlFor="textinput-address2"
+                label="Preferred Quarantine Location*"
+                background={this.colors("quarantineLocation")}
+              >
+                <TextInput
+                  required={this.decoder("quarantineLocation")}
+                  id="textinput-address2"
+                  name="quarantineLocation"
+                  placeholder="Campus or Home"
+                />
+              </FormField>
+            )}
+            {this.decoder("dob") && (
+              <FormField
                 name="dob"
-                mask={dateMask(value.dob)}
-                value={value.dob}
-                // onKeyUp={(e) => console.log(e.keyCode)}
-              />
-            </FormField>
-            <FormField
-              background="light-1.5"
-              name="doc"
-              htmlFor="textinput-doc"
-              label="Date of Close Contact"
-            >
-              <MaskedInput
-                required
-                id="textinput-doc"
+                htmlFor="textinput-dob"
+                label="Date of Birth*"
+                background={this.colors("dob")}
+              >
+                <MaskedInput
+                  required={this.decoder("dob")}
+                  id="textinput-dob"
+                  name="dob"
+                  mask={dateMask(value.dob)}
+                  value={value.dob}
+                />
+              </FormField>
+            )}
+            {this.decoder("doc") && (
+              <FormField //doc
+                background={this.colors("doc")}
                 name="doc"
-                mask={dateMask(value.doc)}
-                value={value.doc}
-              />
-            </FormField>
-            <FormField
-              name="phone"
-              htmlFor="textinput-phone"
-              label="Phone Number"
-            >
-              <MaskedInput
-                required
-                id="textinput-phone"
-                name="phone"
-                mask={phoneNumberMask()}
-                value={value.phone}
-              />
-            </FormField>
+                htmlFor="textinput-doc"
+                label="Date of Close Contact"
+              >
+                <MaskedInput
+                  required={this.decoder("doc")}
+                  id="textinput-doc"
+                  name="doc"
+                  mask={dateMask(value.doc)}
+                  value={value.doc}
+                />
+              </FormField>
+            )}
             <CardFooter
               direction="row"
               align="start"

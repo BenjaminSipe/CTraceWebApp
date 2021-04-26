@@ -28,9 +28,9 @@ export default function PatientModalCardBody(props) {
       },
       symptoms: { name: "Symptoms", val: item[1] },
     };
-    if (item[0] === "symptoms") {
-      console.log(item[1]);
-    }
+    // if (item[0] === "symptoms") {
+    //   console.log(item[1]);
+    // }
     return Object.keys(formatter).includes(item[0])
       ? formatter[item[0]]
       : {
@@ -38,6 +38,7 @@ export default function PatientModalCardBody(props) {
           val: item[1],
         };
   };
+
   return (
     <Card
       style={{
@@ -101,9 +102,16 @@ export default function PatientModalCardBody(props) {
                   ),
                 },
               ]}
-              data={Object.entries(data)
-                .filter(
-                  (item) =>
+              data={Object.entries({
+                ...data,
+                ...(typeof data.address == "object" && data.address),
+              })
+                .filter((item) => {
+                  console.log(item);
+
+                  return (
+                    (item[0] === "symptoms" && item[1].length > 0) ||
+                    (item[0] === "address" && typeof item[1] !== "object") ||
                     ![
                       "_id",
                       "name",
@@ -111,14 +119,19 @@ export default function PatientModalCardBody(props) {
                       "cardColor",
                       "form",
                       "view",
+                      "address",
+                      "symptoms",
                     ].includes(item[0])
-                )
+                  );
+                })
                 .map((item) => {
+                  // console.log(item);
                   // This is a weird special case I never figured out why.
                   // Something to do with arrays being passed. I may need to parse the objects I pass around.
                   if (item[0] === "symptoms") {
                     return { name: "Symptoms", val: item[1].join(", ") };
                   }
+
                   return formats(item);
                 })}
             />
@@ -196,6 +209,7 @@ export default function PatientModalCardBody(props) {
                 )
               }
             />
+
             <Button
               primary
               label="release"
@@ -243,6 +257,9 @@ export default function PatientModalCardBody(props) {
                 });
               }}
             />
+            {data.view === "Exposed" && (
+              <Button secondary color="rust" label="COVID19 Positive" />
+            )}
           </CardFooter>
         </Box>
       </Box>

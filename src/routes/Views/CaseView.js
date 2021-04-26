@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Grid, Box, Layer, Tabs, Tab } from "grommet";
+import { Grid, Box, Layer, Tabs, Tab, ResponsiveContext } from "grommet";
 import PatientCard from "./PatientCard";
 import {
   getCases,

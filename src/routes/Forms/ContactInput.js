@@ -24,7 +24,7 @@ export default function ContactInput(props) {
         fill
         rows={["flex", "flex", "flex"]}
         columns={["flex", "xsmall"]}
-        gap={{ row: "small", column: 0 }}
+        gap={{ row: "small", column: "none" }}
         justify="start"
         areas={[
           { name: "first", start: [0, 0], end: [1, 0] },

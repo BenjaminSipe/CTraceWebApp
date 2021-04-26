@@ -15,7 +15,7 @@ import {
   Image,
   Paragraph,
 } from "grommet";
-import { Redirect } from "react-router-dom";
+// import { Redirect } from "react-router-dom";
 import { postCase } from "../../scripts/API";
 import {
   optDateMask,
@@ -28,6 +28,45 @@ import {
 import ContactInput from "./ContactInput";
 
 class CaseForm extends Component {
+  colors(value) {
+    return [
+      "name",
+      "email",
+      "phone",
+      "address",
+      "quarantineLocation",
+      "dob",
+      "dot",
+      "doso",
+    ]
+      .filter((item) => this.decoder(item))
+      .indexOf(value) %
+      2 ===
+      1
+      ? "light-1.5"
+      : "light-1";
+  }
+  decoder(value) {
+    if (this.state.code) {
+      switch (value) {
+        case "email":
+          return this.state.code % 2 < 1;
+        case "phone":
+          // console.log(value + (Math.floor(this.state.code / 2) % 2));
+          return this.state.code % 4 < 2;
+        case "address":
+          // console.log(value + (Math.floor(this.state.code / 4) % 2));
+          return this.state.code % 8 < 4;
+        case "dob":
+          // console.log(value + (Math.floor(this.state.code / 8) % 2));
+          return this.state.code < 8;
+        default:
+          return true;
+      }
+    } else {
+      return true;
+    }
+  }
   getProp = (index, name) => {
     return this.state.contacts[index][name];
   };
@@ -67,7 +106,7 @@ class CaseForm extends Component {
         alignSelf="center"
         key="addContact"
         // style=
-        icon={<GrAdd style={{ fontSize: "50px" }} />}
+        icon={<GrAdd style={{ fontSize: "35px" }} />}
         label="Identify people you have had close contact recently."
         onClick={() => {
           this.state.contacts.push({
@@ -106,9 +145,16 @@ class CaseForm extends Component {
         "Nausea or vomiting",
         "Diarrhea",
       ],
-      id: props.query.get("id"),
+      code: props.query.get("code") || 0,
+      id: props.query.get("id") || "",
       name: "",
-      address: "",
+      address: {
+        street1: "",
+        street2: "",
+        city: "",
+        state: "",
+        zip: "",
+      },
       email: "",
       dob: "",
       phone: "",
@@ -120,9 +166,6 @@ class CaseForm extends Component {
     };
   }
   render() {
-    if (this.state.redirect) {
-      return <Redirect to="/postform" />;
-    }
     return (
       <div>
         <Box background="control" fill>
@@ -138,8 +181,8 @@ class CaseForm extends Component {
           </Heading>
           <Paragraph style={{ margin: 0, padding: "10px", paddingTop: 0 }}>
             This form has been custom designed by C-Trace to be used for contact
-            tracing purposes only. Please fill out the below information
-            promptly and honestly.
+            tracing purposes only. Required fields are marked with an asterisk*.
+            Please fill out the below information promptly and honestly.
           </Paragraph>
         </Box>
         <Form
@@ -160,7 +203,13 @@ class CaseForm extends Component {
                 "Sore throat",
               ],
               name: "",
-              address: "",
+              address: {
+                street1: "",
+                street2: "",
+                city: "",
+                state: "",
+                zip: "",
+              },
               email: "",
               dob: "",
               dot: "",
@@ -185,161 +234,267 @@ class CaseForm extends Component {
               contacts,
               symptoms,
             } = this.state;
-            postCase({
+            var query = {
               id,
               name,
-              address,
-              email,
               dob,
-              dot,
-              doso,
-              phone,
-              quarantineLocation,
               contacts,
-              symptoms,
-            }).then(() => {
-              this.setState({ redirect: true });
+              quarantineLocation,
+              ...(email !== "" && { email: email }),
+              ...(address.street1 !== "" && { address: address }),
+              ...(dot !== "" && { dot: dot }),
+              ...(doso !== "" && { doso: doso }),
+              ...(phone !== "" && { phone: phone }),
+              ...(symptoms !== [] && { symptoms: symptoms }),
+            };
+
+            postCase(query).then((res) => {
+              console.log(res);
             });
           }}
         >
-          <FormField //name
-            name="name"
-            htmlFor="textinput-name"
-            label="Full Name"
-            required
-            validate={validationMasks.name}
-          >
-            <MaskedInput
-              autoFocus
-              id="textinput-name"
+          {this.decoder("name") && (
+            <FormField //name
               name="name"
-              mask={nameMask()}
-              value={this.state.name}
-              onChange={(event) => {
-                this.setState({ name: event.target.value });
-              }}
-            />
-          </FormField>
-          <FormField
-            background="light-1.5" //email
-            name="email"
-            htmlFor="textinput-email"
-            label="Email"
-            required
-            validate={validationMasks.email}
-          >
-            <MaskedInput
-              id="textinput-email"
+              htmlFor="textinput-name"
+              label="Full Name*"
+              validate={validationMasks.name}
+              required={this.decoder("name")}
+              background={this.colors("name")}
+            >
+              <MaskedInput
+                autoFocus
+                id="textinput-name"
+                name="name"
+                mask={nameMask()}
+                value={this.state.name}
+                onChange={(event) => {
+                  this.setState({ name: event.target.value });
+                }}
+              />
+            </FormField>
+          )}
+          {this.decoder("email") && (
+            <FormField
+              // required={this.decoder("email")}
+              background={this.colors("email")}
+              // background="light-1.5" //email
               name="email"
-              placeholder="example@email.com"
-              mask={emailMask()}
-              value={this.state.email}
-              onChange={(event) => {
-                this.setState({ email: event.target.value });
-              }}
-            />
-          </FormField>
-          <FormField //phone
-            required
-            validate={validationMasks.phone}
-            name="phone"
-            htmlFor="textinput-phone"
-            label="Phone Number"
-          >
-            <MaskedInput
-              id="textinput-phone"
+              htmlFor="textinput-email"
+              label="Email"
+              // required
+              validate={validationMasks.email}
+            >
+              <MaskedInput
+                id="textinput-email"
+                name="email"
+                placeholder="example@email.com"
+                mask={emailMask()}
+                value={this.state.email}
+                onChange={(event) => {
+                  this.setState({ email: event.target.value });
+                }}
+              />
+            </FormField>
+          )}{" "}
+          {this.decoder("phone") && (
+            <FormField //phone
+              // required
+              // required={this.decoder("phone")}
+              background={this.colors("phone")}
+              // validate={validationMasks.phone}
               name="phone"
-              mask={phoneNumberMask()}
-              value={this.state.phone}
-              onChange={(event) => {
-                this.setState({ phone: event.target.value });
-              }}
-            />
-          </FormField>
-          <FormField
-            background="light-1.5" //address
-            required
-            name="address"
-            htmlFor="textinput-address"
-            label="Address"
-          >
-            <TextInput
-              id="textinput-address"
+              htmlFor="textinput-phone"
+              label="Phone Number"
+            >
+              <MaskedInput
+                id="textinput-phone"
+                name="phone"
+                mask={phoneNumberMask()}
+                value={this.state.phone}
+                onChange={(event) => {
+                  this.setState({ phone: event.target.value });
+                }}
+              />
+            </FormField>
+          )}{" "}
+          {this.decoder("address") && (
+            <FormField
+              background={this.colors("address")}
+              // background="light-1.5" //address
+              // required
               name="address"
-              placeholder="1 MyStreet Road, MyTown MO 00000"
-              value={this.state.address}
-              onChange={(event) => {
-                this.setState({ address: event.target.value });
-              }}
-            />
-          </FormField>
-          <FormField // qlocation
-            required
-            name="quarantineLocation"
-            htmlFor="textinput-address"
-            label="Quarentine Location"
-          >
-            <TextInput
-              id="textinput-address"
+              // htmlFor="textinput-address"
+              label="Address"
+            >
+              <TextInput
+                required
+                id="textinput-address-street1"
+                name="address-street1"
+                placeholder="Street Address*"
+                value={this.state.address.street1}
+                onChange={(event) =>
+                  this.setState({
+                    address: {
+                      ...this.state.address,
+                      street1: event.target.value,
+                    },
+                  })
+                }
+              />
+              <TextInput
+                id="textinput-address-street2"
+                name="address-street2"
+                placeholder="Apt. Number "
+                value={this.state.address.street2}
+                onChange={(event) =>
+                  this.setState({
+                    address: {
+                      ...this.state.address,
+                      street2: event.target.value,
+                    },
+                  })
+                }
+              />
+              <TextInput
+                required
+                id="textinput-address-city"
+                name="address-city"
+                placeholder="City*"
+                value={this.state.address.city}
+                onChange={(event) =>
+                  this.setState({
+                    address: {
+                      ...this.state.address,
+                      city: event.target.value,
+                    },
+                  })
+                }
+              />
+              <TextInput
+                required
+                id="textinput-address-state"
+                name="address-state"
+                placeholder="State*"
+                value={this.state.address.state}
+                onChange={(event) =>
+                  this.setState({
+                    address: {
+                      ...this.state.address,
+                      state: event.target.value,
+                    },
+                  })
+                }
+              />
+              <TextInput
+                required
+                id="textinput-address-zip"
+                name="address-zip"
+                placeholder="Zip*"
+                value={this.state.address.zip}
+                onChange={(event) =>
+                  this.setState({
+                    address: {
+                      ...this.state.address,
+                      zip: event.target.value,
+                    },
+                  })
+                }
+              />
+              {/* <TextInput
+                id="textinput-address"
+                name="address"
+                placeholder="1 MyStreet Road, MyTown MO 00000"
+                value={this.state.address}
+                onChange={(event) => {
+                  this.setState({ address: event.target.value });
+                }}
+              /> */}
+            </FormField>
+          )}{" "}
+          {this.decoder("quarantineLocation") && (
+            <FormField // qlocation
+              // required
+              required={this.decoder("quarantineLocation")}
+              background={this.colors("quarantineLocation")}
               name="quarantineLocation"
-              placeholder="Campus or Home"
-              value={this.state.quarantineLocation}
-              onChange={(event) => {
-                this.setState({ quarantineLocation: event.target.value });
-              }}
-            />
-          </FormField>
-          <FormField
-            background="light-1.5" //dob
-            name="dob"
-            htmlFor="textinput-dob"
-            label="Date of Birth"
-            required
-            validate={validationMasks.date}
-          >
-            <MaskedInput
-              id="textinput-dob"
+              htmlFor="textinput-address"
+              label="Preferred Quarantine Location*"
+            >
+              <TextInput
+                id="textinput-address"
+                name="quarantineLocation"
+                placeholder="Campus or Home"
+                value={this.state.quarantineLocation}
+                onChange={(event) => {
+                  this.setState({ quarantineLocation: event.target.value });
+                }}
+              />
+            </FormField>
+          )}{" "}
+          {this.decoder("dob") && (
+            <FormField
+              required={this.decoder("dob")}
+              background={this.colors("dob")}
+              // background="light-1.5" //dob
               name="dob"
-              mask={dateMask(this.state.dob)}
-              value={this.state.dob}
-              onChange={(event) => {
-                this.setState({ dob: event.target.value });
-              }}
-            />
-          </FormField>
-          <FormField //dot
-            name="dot"
-            htmlFor="textinput-dot"
-            label="Date of Covid Test, leave blank for no test."
-            validate={validationMasks.optDate}
-          >
-            <MaskedInput
-              id="textinput-dot"
+              htmlFor="textinput-dob"
+              label="Date of Birth*"
+              // required
+              validate={validationMasks.date}
+            >
+              <MaskedInput
+                id="textinput-dob"
+                name="dob"
+                mask={dateMask(this.state.dob)}
+                value={this.state.dob}
+                onChange={(event) => {
+                  this.setState({ dob: event.target.value });
+                }}
+              />
+            </FormField>
+          )}
+          {this.decoder("dot") && (
+            <FormField //dot
+              // required={this.decoder("dot")}
+              background={this.colors("dot")}
               name="dot"
-              mask={optDateMask(this.state.dot)}
-              value={this.state.dot}
-              onChange={(event) => {
-                this.setState({ dot: event.target.value });
-              }}
-            />
-          </FormField>
-          <FormField
-            background="light-1.5" //doso
-            name="doso"
-            htmlFor="textinput-doso"
-            label="Date of Symptom Onset."
-            validate={validationMasks.optDate}
-          >
-            <MaskedInput
-              id="textinput-doso"
+              htmlFor="textinput-dot"
+              label="Date of Covid Test"
+              validate={validationMasks.optDate}
+            >
+              <MaskedInput
+                id="textinput-dot"
+                name="dot"
+                mask={optDateMask(this.state.dot)}
+                value={this.state.dot}
+                onChange={(event) => {
+                  this.setState({ dot: event.target.value });
+                }}
+              />
+            </FormField>
+          )}{" "}
+          {this.decoder("doso") && (
+            <FormField
+              // required={this.decoder("doso")}
+              background={this.colors("doso")}
+              // background="light-1.5" //doso
               name="doso"
-              mask={optDateMask(this.state.doso)}
-              value={this.state.doso}
-              onChange={(event) => {
-                this.setState({ doso: event.target.value });
-              }}
-            />
-          </FormField>
+              htmlFor="textinput-doso"
+              label="Date of Symptom Onset"
+              validate={validationMasks.optDate}
+            >
+              <MaskedInput
+                id="textinput-doso"
+                name="doso"
+                mask={optDateMask(this.state.doso)}
+                value={this.state.doso}
+                onChange={(event) => {
+                  this.setState({ doso: event.target.value });
+                }}
+              />
+            </FormField>
+          )}
           {this.state.doso.length > 0 && (
             <FormField
               name="symptoms"
