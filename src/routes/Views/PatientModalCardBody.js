@@ -11,7 +11,13 @@ import {
 import { GrClose } from "react-icons/gr";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { deleteContact, deleteCase, releasePatient } from "../../scripts/API";
+import {
+  deleteContact,
+  deleteCase,
+  releasePatient,
+  postCaseMessage,
+  postContactMessage,
+} from "../../scripts/API";
 
 export default function PatientModalCardBody(props) {
   const MySwal = withReactContent(Swal);
@@ -107,8 +113,6 @@ export default function PatientModalCardBody(props) {
                 ...(typeof data.address == "object" && data.address),
               })
                 .filter((item) => {
-                  console.log(item);
-
                   return (
                     (item[0] === "symptoms" && item[1].length > 0) ||
                     (item[0] === "address" && typeof item[1] !== "object") ||
@@ -198,18 +202,78 @@ export default function PatientModalCardBody(props) {
                 });
               }}
             />
-            <Button
-              secondary
-              label="message"
-              onClick={() =>
-                Swal.fire(
-                  "Custom Messages not implemented yet.",
-                  "Our apologies for the inconvenience.",
-                  "error"
-                )
-              }
-            />
+            {data.form && (
+              <Button
+                secondary
+                label="message"
+                onClick={() => {
+                  props.close();
+                  Swal.fire({
+                    title: "Send exposure form to patient?",
+                    showCancelButton: true,
+                    confirmButtonText: `Yes`,
+                    showLoaderOnConfirm: true,
 
+                    cancelButtonText: `No`,
+                    allowOutsideClick: () => !Swal.isLoading(),
+                    preConfirm: () => {
+                      return postContactMessage({ _id: data._id })
+                        .then((res) => {
+                          // props.updateScreen();
+                          return res;
+                        })
+                        .catch((res) => {
+                          console.log(res);
+                        });
+                    },
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      props.updateScreen(props.patientData.view);
+                      Swal.fire("Message Sent Successfully", "", "success");
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                      props.reopenModal();
+                    }
+                  });
+                }}
+              />
+            )}
+
+            {data.view === "Exposed" && !data.form && (
+              <Button
+                secondary
+                color="rust"
+                label="Developed Symptoms"
+                onClick={() => {
+                  props.close();
+                  Swal.fire({
+                    title: "Update record and send message to patient?",
+                    showCancelButton: true,
+                    confirmButtonText: `Yes, I'm ready`,
+                    showLoaderOnConfirm: true,
+
+                    cancelButtonText: `No, Not yet`,
+                    allowOutsideClick: () => !Swal.isLoading(),
+                    preConfirm: () => {
+                      return postCaseMessage({ _id: data._id })
+                        .then((res) => {
+                          // props.updateScreen();
+                          return res;
+                        })
+                        .catch((res) => {
+                          console.log(res);
+                        });
+                    },
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      props.updateScreen(props.patientData.view);
+                      Swal.fire("Message Sent Successfully", "", "success");
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                      props.reopenModal();
+                    }
+                  });
+                }}
+              />
+            )}
             <Button
               primary
               label="release"
@@ -257,9 +321,6 @@ export default function PatientModalCardBody(props) {
                 });
               }}
             />
-            {data.view === "Exposed" && (
-              <Button secondary color="rust" label="COVID19 Positive" />
-            )}
           </CardFooter>
         </Box>
       </Box>
