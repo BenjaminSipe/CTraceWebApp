@@ -20,7 +20,7 @@ import {
   nameMask,
   emailMask,
 } from "../../scripts/InputMasks";
-
+import Swal from "sweetalert2";
 import { postContact } from "../../scripts/API";
 
 class ContactForm extends Component {
@@ -44,7 +44,7 @@ class ContactForm extends Component {
 
   decoder(value) {
     // console.log(value);
-    if (value == "doc") return false;
+    if (value === "doc") return false;
     if (this.state.code) {
       switch (value) {
         case "email":
@@ -124,28 +124,72 @@ class ContactForm extends Component {
             onReset={() => {
               this.setState({ value: {} });
             }}
-            onSubmit={({ value }) => {
-              const {
-                id,
-                name,
-                address,
-                email,
-                dob,
-                phone,
-                quarantineLocation,
-              } = this.state.value;
-              var query = {
-                id,
-                name,
-                dob,
-                quarantineLocation,
-                ...(email !== "" && { email: email }),
-                ...(address.street1 !== "" && { address: address }),
-                ...(phone !== "" && { phone: phone }),
-              };
+            onSubmit={() => {
+              Swal.fire({
+                title: "Ready to submit?",
+                showCancelButton: true,
+                confirmButtonText: `Yes, I'm ready`,
+                showLoaderOnConfirm: true,
 
-              postContact(query).then(() => {
-                this.setState({ redirect: true });
+                cancelButtonText: `No, Not yet`,
+                allowOutsideClick: () => !Swal.isLoading(),
+                preConfirm: () => {
+                  const {
+                    id,
+                    name,
+                    address,
+                    email,
+                    dob,
+                    phone,
+                    quarantineLocation,
+                  } = this.state.value;
+                  var query = {
+                    id,
+                    name,
+                    dob,
+                    quarantineLocation,
+                    ...(email !== "" && { email: email }),
+                    ...(address.street1 !== "" && { address: address }),
+                    ...(phone !== "" && { phone: phone }),
+                  };
+
+                  return postContact(query)
+                    .then((res) => {
+                      // props.updateScreen();
+                      console.log(res);
+                      return res;
+                    })
+                    .catch((res) => {
+                      console.log(res);
+                    });
+                },
+              }).then((result) => {
+                console.log(result);
+                if (result.isConfirmed) {
+                  if (result.value.err) {
+                    Swal.fire(
+                      "Something went wrong!",
+                      "We were unable to submit this information at this time. Please check your internet connection, or try again later.",
+                      "error"
+                    );
+                  } else {
+                    const d = new Date(result.value.releaseDate);
+                    Swal.fire(
+                      "Form Submitted",
+                      "Thank you for submitting this form. Your quarantine release date is " +
+                        (d.getMonth() + 1) +
+                        "/" +
+                        (d.getDay() + 1) +
+                        "/" +
+                        d.getFullYear() +
+                        ".",
+                      "success"
+                    );
+                  }
+                  // props.updateScreen(props.patientData.view);
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                  // props.reopenModal();
+                }
               });
             }}
           >

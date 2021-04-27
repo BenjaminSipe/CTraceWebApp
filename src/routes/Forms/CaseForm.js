@@ -2,6 +2,7 @@
 import Logo from "../../Logo_V2.svg";
 import React, { Component } from "react";
 import { GrAdd } from "react-icons/gr";
+import Swal from "sweetalert2";
 import {
   CheckBoxGroup,
   MaskedInput,
@@ -221,35 +222,74 @@ class CaseForm extends Component {
             });
           }}
           onSubmit={() => {
-            const {
-              id,
-              name,
-              address,
-              email,
-              dob,
-              dot,
-              doso,
-              phone,
-              quarantineLocation,
-              contacts,
-              symptoms,
-            } = this.state;
-            var query = {
-              id,
-              name,
-              dob,
-              contacts,
-              quarantineLocation,
-              ...(email !== "" && { email: email }),
-              ...(address.street1 !== "" && { address: address }),
-              ...(dot !== "" && { dot: dot }),
-              ...(doso !== "" && { doso: doso }),
-              ...(phone !== "" && { phone: phone }),
-              ...(symptoms !== [] && { symptoms: symptoms }),
-            };
+            Swal.fire({
+              title: "Ready to submit?",
+              showCancelButton: true,
+              confirmButtonText: `Yes, I'm ready`,
+              showLoaderOnConfirm: true,
 
-            postCase(query).then((res) => {
-              console.log(res);
+              cancelButtonText: `No, Not yet`,
+              allowOutsideClick: () => !Swal.isLoading(),
+              preConfirm: () => {
+                const {
+                  id,
+                  name,
+                  address,
+                  email,
+                  dob,
+                  dot,
+                  doso,
+                  phone,
+                  quarantineLocation,
+                  contacts,
+                  symptoms,
+                } = this.state;
+                var query = {
+                  id,
+                  name,
+                  dob,
+                  contacts,
+                  quarantineLocation,
+                  ...(email !== "" && { email: email }),
+                  ...(address.street1 !== "" && { address: address }),
+                  ...(dot !== "" && { dot: dot }),
+                  ...(doso !== "" && { doso: doso }),
+                  ...(phone !== "" && { phone: phone }),
+                  ...(symptoms !== [] && { symptoms: symptoms }),
+                };
+
+                postCase(query).then((res) => {
+                  console.log(res);
+                  return res;
+                });
+              },
+            }).then((result) => {
+              console.log(result);
+              if (result.isConfirmed) {
+                if (result.value.err) {
+                  Swal.fire(
+                    "Something went wrong!",
+                    "We were unable to submit this information at this time. Please check your internet connection, or try again later.",
+                    "error"
+                  );
+                } else {
+                  const d = new Date(result.value.releaseDate);
+                  Swal.fire(
+                    "Form Submitted",
+                    "Thank you for submitting this form. Your quarantine release date is " +
+                      (d.getMonth() + 1) +
+                      "/" +
+                      (d.getDay() + 1) +
+                      "/" +
+                      d.getFullYear() +
+                      ".",
+                    "success"
+                  );
+                }
+                // props.updateScreen(props.patientData.view);
+              } else if (result.dismiss === Swal.DismissReason.cancel) {
+                // props.reopenModal();
+              }
             });
           }}
         >

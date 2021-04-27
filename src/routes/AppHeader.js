@@ -2,6 +2,7 @@ import React from "react";
 import { Grommet, Image, Button, Header, Menu } from "grommet";
 import Logo from "../Logo_V2.svg";
 export default function AppHeader(props) {
+  const [x, setX] = React.useState(true);
   return (
     <Grommet theme={props.theme}>
       <Header background="accent-1">
@@ -24,7 +25,23 @@ export default function AppHeader(props) {
           ></Image>
         </Button>
 
-        <Menu label="account" items={[{ label: "logout" }]} />
+        <Menu
+          label="account"
+          items={[
+            {
+              label: "logout",
+              onClick: () => {
+                localStorage.setItem("authToken", "");
+              },
+            },
+            {
+              label: "login",
+              onClick: () => {
+                localStorage.setItem("authToken", "authToken1234");
+              },
+            },
+          ]}
+        />
       </Header>
     </Grommet>
   );

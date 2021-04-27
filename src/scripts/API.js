@@ -25,6 +25,7 @@ function postContact(value) {
     .post("/api/contact/" + id, rest)
     .then((res) => {
       console.log(res);
+      return res.data;
     })
     .catch(function (error) {
       console.log(error);
@@ -37,6 +38,7 @@ function postCase(value) {
     .post("/api/case/" + id, rest)
     .then(function (response) {
       console.log(response);
+      return response.data;
     })
     .catch(function (error) {
       // console.log(error);

@@ -68,16 +68,20 @@ function App() {
           <Route path="/Case">
             <CaseForm query={query} />
           </Route>
-          <Route path="/postForm">
+          {/* <Route path="/postForm">
             <PostForm></PostForm>
-          </Route>
+          </Route> */}
           <Route path="/">
             <Header theme={customTheme}></Header>
             <Switch>
-              <Route path="/Dashboard">
-                <CaseView />
+              <Route exact path="/">
+                {localStorage.getItem("authToken") === "authToken1234" ? (
+                  <CaseView />
+                ) : (
+                  "You do not have access to this route"
+                )}
               </Route>
-              <Route path="/MessageCases">
+              {/* <Route path="/MessageCases">
                 <MessageCases />
               </Route>
               <Route path="/MessageContacts">
@@ -88,7 +92,7 @@ function App() {
               </Route>
               <Route exact path="/">
                 <Home></Home>
-              </Route>
+              </Route> */}
               <Route path="/">
                 <Redirect to="/" />
               </Route>
