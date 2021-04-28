@@ -2,7 +2,6 @@ import React from "react";
 import { Grommet, Image, Button, Header, Menu } from "grommet";
 import Logo from "../Logo_V2.svg";
 export default function AppHeader(props) {
-  const [x, setX] = React.useState(true);
   return (
     <Grommet theme={props.theme}>
       <Header background="accent-1">

@@ -166,6 +166,7 @@ class ContactForm extends Component {
               }).then((result) => {
                 console.log(result);
                 if (result.isConfirmed) {
+                  // console.log("test");
                   if (result.value.err) {
                     Swal.fire(
                       "Something went wrong!",
@@ -174,12 +175,13 @@ class ContactForm extends Component {
                     );
                   } else {
                     const d = new Date(result.value.releaseDate);
+                    // console.log(d.getDay());
                     Swal.fire(
                       "Form Submitted",
                       "Thank you for submitting this form. Your quarantine release date is " +
                         (d.getMonth() + 1) +
                         "/" +
-                        (d.getDay() + 1) +
+                        (d.getDay() + 2) +
                         "/" +
                         d.getFullYear() +
                         ".",

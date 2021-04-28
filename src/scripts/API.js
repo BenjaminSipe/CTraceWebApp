@@ -1,6 +1,5 @@
 import axios from "axios";
 
-// const url = "172.25.22.175";
 function getContactByName(name) {
   return axios.get("/api/contact/by/name/" + name);
 }

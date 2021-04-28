@@ -258,8 +258,9 @@ class CaseForm extends Component {
                   ...(symptoms !== [] && { symptoms: symptoms }),
                 };
 
-                postCase(query).then((res) => {
+                return postCase(query).then((res) => {
                   console.log(res);
+                  // this.setState({ result: res });
                   return res;
                 });
               },
@@ -273,13 +274,14 @@ class CaseForm extends Component {
                     "error"
                   );
                 } else {
+                  console.log(this.state.result);
                   const d = new Date(result.value.releaseDate);
                   Swal.fire(
                     "Form Submitted",
                     "Thank you for submitting this form. Your quarantine release date is " +
                       (d.getMonth() + 1) +
                       "/" +
-                      (d.getDay() + 1) +
+                      (d.getDay() + 2) +
                       "/" +
                       d.getFullYear() +
                       ".",

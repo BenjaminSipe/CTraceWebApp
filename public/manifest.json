@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "C-Trace App",
+  "name": "C-Trace contact tracing app",
   "icons": [
     {
       "src": "favicon.ico",
