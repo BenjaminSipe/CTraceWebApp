@@ -26,6 +26,7 @@
   "scripts": {
     "start": "PORT=8080 react-scripts start",
     "build": "react-scripts build",
+    "rm": "sudo rmdir -r /usr/share/nginx/html/build",
     "move": "sudo mv /home/ec2-user/c.trace/CTraceWebApp/build /usr/share/nginx/html",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
