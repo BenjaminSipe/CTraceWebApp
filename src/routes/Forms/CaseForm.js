@@ -325,7 +325,7 @@ class CaseForm extends Component {
               htmlFor="textinput-email"
               label="Email"
               // required
-              validate={validationMasks.email}
+              // validate={validationMasks.email}
             >
               <MaskedInput
                 id="textinput-email"

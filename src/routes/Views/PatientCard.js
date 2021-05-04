@@ -10,6 +10,7 @@ import {
   Box,
   Tip,
 } from "grommet";
+import React from "react";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
 import Badge from "@material-ui/core/Badge";
@@ -28,8 +29,19 @@ const theme = createMuiTheme({
   },
 });
 export default function PatientCard(props) {
+  const getDate = (paramD) => {
+    let x = new Date(paramD);
+    // console.log(paramD + " " + name);
+    x.setDate(x.getDate() + 14);
+    // console.log(x + " " + name);
+    return x;
+  };
   // const classes = useStyles();
   const { name, _id, doc, dot, status, doso, address, form } = props.data;
+
+  const [relevantDate, setRelevantDate] = React.useState(
+    status === "Exposed" ? doc : dot || doso
+  );
   const errorType = () => {
     if (status === "Recovered" || status === "Past") return [];
     if (form) {
@@ -37,23 +49,23 @@ export default function PatientCard(props) {
     }
     if (hasError() || !address) {
       var d = new Date();
-
-      var x;
-      switch (status) {
-        case "Exposed":
-          x = new Date(doc);
-          break;
-        case "Positive":
-          if (doso) {
-            x = new Date(doso);
-          } else {
-            x = new Date(dot);
-          }
-          break;
-        default:
-          break;
-      }
-      x.setDate(x.getDate() + 14);
+      // console.log(d);
+      var x = getDate(new Date(relevantDate));
+      console.log(x + " " + name);
+      // switch (status) {
+      //   case "Exposed":
+      //     x = getDate(doc);
+      //     break;
+      //   case "Positive":
+      //     if (doso) {
+      //       x = getDate(doso);
+      //     } else {
+      //       x = getDate(dot);
+      //     }
+      //     break;
+      //   default:
+      //     break;
+      // }
       // d = today
       // x == when their quarantine ends.
       // if today is after thier warantine ends
@@ -157,12 +169,10 @@ export default function PatientCard(props) {
               >
                 {formatName}
               </Text>
-              {dot ? (
-                <Text color="gray">{props.formatDate(new Date(dot))}</Text>
-              ) : doc ? (
-                <Text color="gray">{props.formatDate(new Date(doc))}</Text>
-              ) : (
-                ""
+              {relevantDate && (
+                <Text color="gray">
+                  {props.formatDate(getDate(relevantDate))}
+                </Text>
               )}
             </CardBody>
           ) : (

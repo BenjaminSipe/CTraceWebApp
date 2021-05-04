@@ -113,6 +113,7 @@ export default function PatientModalCardBody(props) {
                 ...(typeof data.address == "object" && data.address),
               })
                 .filter((item) => {
+                  if (item[0] === "dob") console.log(item[1]);
                   return (
                     (item[0] === "symptoms" && item[1].length > 0) ||
                     (item[0] === "address" && typeof item[1] !== "object") ||
