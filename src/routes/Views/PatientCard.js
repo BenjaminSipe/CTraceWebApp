@@ -51,7 +51,7 @@ export default function PatientCard(props) {
       var d = new Date();
       // console.log(d);
       var x = getDate(new Date(relevantDate));
-      console.log(x + " " + name);
+      // console.log(x + " " + name);
       // switch (status) {
       //   case "Exposed":
       //     x = getDate(doc);
