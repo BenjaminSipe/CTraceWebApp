@@ -100,26 +100,28 @@ class CaseForm extends Component {
     });
 
     contactInputs.push(
-      <Button
-        primary
-        color="light-4"
-        hoverIndicator
-        alignSelf="center"
-        key="addContact"
-        // style=
-        icon={<GrAdd style={{ fontSize: "35px" }} />}
-        label="Identify people you have had close contact recently."
-        onClick={() => {
-          this.state.contacts.push({
-            name: "",
-            doc: "",
-            info: "",
-            type: "Phone",
-          });
-          // this.setState({ value });
-          this.getContacts();
-        }}
-      ></Button>
+      <Box>
+        <Button
+          primary
+          color="light-4"
+          hoverIndicator
+          alignSelf="center"
+          key="addContact"
+          // style=
+          icon={<GrAdd style={{ fontSize: "35px" }} />}
+          label="Identify people you have had close contact recently."
+          onClick={() => {
+            this.state.contacts.push({
+              name: "",
+              doc: "",
+              info: "",
+              type: "Phone",
+            });
+            // this.setState({ value });
+            this.getContacts();
+          }}
+        />
+      </Box>
     );
     this.setState({ contactInputs });
   };
@@ -338,7 +340,7 @@ class CaseForm extends Component {
                 }}
               />
             </FormField>
-          )}{" "}
+          )}
           {this.decoder("phone") && (
             <FormField //phone
               // required
@@ -359,7 +361,7 @@ class CaseForm extends Component {
                 }}
               />
             </FormField>
-          )}{" "}
+          )}
           {this.decoder("address") && (
             <FormField
               background={this.colors("address")}
@@ -453,7 +455,7 @@ class CaseForm extends Component {
                 }}
               /> */}
             </FormField>
-          )}{" "}
+          )}
           {this.decoder("quarantineLocation") && (
             <FormField // qlocation
               // required
@@ -473,7 +475,7 @@ class CaseForm extends Component {
                 }}
               />
             </FormField>
-          )}{" "}
+          )}
           {this.decoder("dob") && (
             <FormField
               required={this.decoder("dob")}
@@ -515,7 +517,7 @@ class CaseForm extends Component {
                 }}
               />
             </FormField>
-          )}{" "}
+          )}
           {this.decoder("doso") && (
             <FormField
               // required={this.decoder("doso")}
@@ -613,7 +615,7 @@ class CaseForm extends Component {
             )}
             {this.state.contactInputs}
           </Box>
-          <CardFooter
+          <Box
             direction="row"
             align="start"
             style={{
@@ -626,7 +628,7 @@ class CaseForm extends Component {
           >
             <Button type="reset" label="Reset" />
             <Button type="submit" primary label="Submit" />
-          </CardFooter>
+          </Box>
         </Form>
       </div>
     );

@@ -4,6 +4,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
+scp -i ~/Downloads/amazon.pem ~/Desktop/build ec2-user@ec2-54-148-105-169.us-west-2.compute.amazonaws.com:~/data/
+
 In the project directory, you can run:
 
 ### `npm start`

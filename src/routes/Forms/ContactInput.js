@@ -21,8 +21,7 @@ export default function ContactInput(props) {
       background={index % 2 === 0 ? "light-1.5" : "light-3.5"}
     >
       <Grid
-        fill
-        rows={["flex", "flex", "flex"]}
+        rows={["100px", "100px", "100px"]}
         columns={["flex", "xsmall"]}
         gap={{ row: "small", column: "none" }}
         justify="start"
